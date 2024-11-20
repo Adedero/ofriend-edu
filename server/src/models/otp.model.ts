@@ -1,0 +1,34 @@
+import mongoose, { Schema } from 'mongoose';
+
+export interface OTPModel {
+  value: number;
+  expiresAt: Date;
+  userId: Schema.Types.ObjectId;
+}
+
+const otpSchema = new Schema<OTPModel>({
+  value: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: function (value: number) {
+        return value.toString().length === 6;
+      },
+      message: 'OTP value must be 6 digits long',
+    }
+  },
+  expiresAt: {
+    type: Date,
+    required: true,
+    default: () => new Date(Date.now() + 60 * 60 * 1000),
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  }
+}, { timestamps: true });  
+
+const OTP = mongoose.model<OTPModel>('OTP', otpSchema);
+
+export default OTP;

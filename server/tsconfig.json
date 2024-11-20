@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2016", // ECMAScript version to compile to
+    "module": "commonjs", // Module system for Node.js
+    "strict": true, // Enable strict type checking
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true, // Import compatibility with CommonJS modules
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory of source files
+
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "logs",
+  ],
+  "types": [
+    "caseless",
+    "cookie",
+    "jsonwebtoken",
+    "long",
+    "request",
+    "tough-cookie"
+  ]
+}
