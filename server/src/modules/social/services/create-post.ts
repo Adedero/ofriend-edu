@@ -12,10 +12,7 @@ interface Post {
   repostedPost?: string;
 }
 
-interface RequestWithFiles extends Request {
-  files?: Record<string, File>
-}
-export default async function createPost(req: RequestWithFiles, res: Response) {
+export default async function createPost(req: Request, res: Response) {
   const user = req.user as ExpressUser;
   const post = req.body as string;
   if (!post) {
@@ -25,9 +22,8 @@ export default async function createPost(req: RequestWithFiles, res: Response) {
   const parsedPost: Post = JSON.parse(post);
   let media = [];
   if (req.files) {
-
+    console.log(req.files)
   }
-  
   /* 
   let { post } = req.body;
     if (!post) {
