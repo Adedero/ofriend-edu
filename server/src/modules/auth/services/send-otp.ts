@@ -23,6 +23,7 @@ export default async function sendOtpEmail(req: Request, res: Response) {
     return;
   }
 
+
   const PIN_EXPIRY_TIME = '1 hour';
   let otp = await db.OTP.findOne({ userId: user.id });
   if (!otp) {
@@ -79,7 +80,7 @@ async function getUser(userId: undefined | string, email: undefined | string): P
       return [null, message];
     }
     message = null;
-    return [{ id: user.id, name: user.name, email: user.email, verified: user.verified }, message];
+    return [{ id: user._id.toString(), name: user.name, email: user.email, verified: user.verified }, message];
   }
   if (email) {
     const validatedEmail = validateEmail(email);
@@ -93,7 +94,7 @@ async function getUser(userId: undefined | string, email: undefined | string): P
       return [null, message];
     }
     message = null;
-    return [{ id: user.id, name: user.name, email: user.email, verified: user.verified }, message];
+    return [{ id: user._id.toString(), name: user.name, email: user.email, verified: user.verified }, message];
   }
   return [null, 'Invalid user ID or email']
 }

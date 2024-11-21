@@ -5,7 +5,7 @@ interface Props {
   type?: string;
 }
 
-const { type = '', textPos = 'right' } = defineProps<Props>();
+const { type = 'spinner', textPos = 'right' } = defineProps<Props>();
 </script>
 
 <template>

@@ -117,7 +117,7 @@ onUnmounted(() => {
     </div>
 
     <div v-if="err">
-      <FetchError :error="err" @retry="sendOtpEmail" />
+      <FetchError :error="err" @retry="sendOtpEmail($route.query?.user_id as string)" />
     </div>
 
     <div v-if="user">

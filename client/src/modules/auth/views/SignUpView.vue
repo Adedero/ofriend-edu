@@ -205,7 +205,7 @@ function validateInput () {
           icon="pi pi-arrow-right" icon-pos="right" />
       </div>
 
-      <p class="text-sm">Already got an account yet? <RouterLink class="font-medium text-turquoise hover:underline"
+      <p class="md:col-span-6 text-sm">Already got an account yet? <RouterLink class="font-medium text-turquoise hover:underline"
           :to="{ name: 'sign-in' }">Sign in</RouterLink>.</p>
     </div>
   </section>
