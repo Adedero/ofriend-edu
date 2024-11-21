@@ -67,7 +67,6 @@ postSchema.pre('save', async function (next) {
       { $inc: { repostsCount: -1 } }
     );
   }
-
   next();
 });
 
