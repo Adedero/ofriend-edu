@@ -1,6 +1,6 @@
 import { type Request, Response} from 'express';
 import { ExpressUser } from '../../../types/express-user.type';
-import { db } from './../../../database/db-models';
+import { db } from '../../../database/db-models';
 export default async function getFollows(req: Request, res: Response) {
   const userId = (req.user as ExpressUser).id;
   const skip = parseInt(req.query.skip as string, 10) || 0;

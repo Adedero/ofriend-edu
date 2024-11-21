@@ -1,5 +1,6 @@
-import getAllPosts from "./services/getAllPosts";
-import getFollows from "./services/getFollows";
+import getPosts from "./services/get-posts";
+import createPost from "./services/create-post";
+import getFollows from "./services/get-follows";
 import searchAndGetUsers from "./services/search-and-get-users";
 
 
@@ -8,7 +9,8 @@ const SocialController = {
   searchAndGetUsers,
 
   //Post
-  getAllPosts,
+  getPosts,
+  createPost,
 
   //Follows
   getFollows

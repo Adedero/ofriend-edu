@@ -15,7 +15,7 @@ export interface PostModel extends Document {
   isEdited: boolean;
   isReposting: boolean;
   repostedPost?: Schema.Types.ObjectId;
-  mentions: { userId: Schema.Types.ObjectId; mentionText: string }[];
+  mentions: { id: Schema.Types.ObjectId; name: string }[];
   isLikedByViewer: boolean;
   isOpenForComments: boolean;
   isViewedByAuthor: boolean;

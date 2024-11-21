@@ -3,7 +3,7 @@ import { ExpressUser } from '../../../types/express-user.type';
 import { db } from '../../../database/db-models';
 
 const LIMIT = 5;
-export default async function getAllPosts (req: Request, res: Response) {
+export default async function getPosts (req: Request, res: Response) {
   const skip = parseInt(req.query.skip as string) || 0;
   const limit = parseInt(req.query.limit as string) || LIMIT;
   const userId = (req.user as ExpressUser).id;

@@ -38,6 +38,7 @@
     "@types/cookie": "^0.6.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/express-fileupload": "^1.5.1",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/long": "^4.0.2",
     "@types/node": "^22.9.0",

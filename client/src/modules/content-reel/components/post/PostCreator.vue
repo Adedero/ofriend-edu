@@ -6,8 +6,7 @@ import useFetch from "@/composables/use-fetch";
 import useUserStore from '@/stores/user.store';
 import { handleMention, parseMentions } from '../../utils/mentions';
 //import socket from '@/config/socket.config';
-import utils from '@/utils';
-import { type MentionedUser } from '../../types';
+import type { MentionedUser, Post } from '../../types';
 import type { UseFetchError } from "@/composables/use-fetch/functions/fetch-error-creator";
 import fetchErrorHandler from '@/composables/use-fetch/functions/fetch-error-handler';
 
@@ -19,14 +18,6 @@ const status = ref(visibilityOptions[0]);
 
 const files = ref<null | File[]>(null);
 const setFiles = (data: File[]) => (files.value = data);
-
-interface Post {
-  textContent: string;
-  status: string;
-  hasText: boolean;
-  hasMedia: boolean;
-  mentions?: MentionedUser[]
-}
 
 const post = ref<Post>({
   textContent: '',

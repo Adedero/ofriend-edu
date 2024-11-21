@@ -8,3 +8,13 @@ export interface MentionedUser {
   name: string;
   picture?: { url: string, name: string }
 }
+
+export interface Post {
+  textContent: string;
+  status: string;
+  hasText: boolean;
+  hasMedia: boolean;
+  mentions?: MentionedUser[];
+  reposting?: boolean;
+  repostedPost?: string;
+}
