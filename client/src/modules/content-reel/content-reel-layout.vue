@@ -1,10 +1,10 @@
 <template>
-  <section class="h-full py-5 grid md:flex relative">
+  <section class="h-full py-5 grid md:flex md:gap-2 relative">
     <nav class="hidden md:block md:w-32 lg:w-56 xl:w-72 md:flex-shrink-0">
       <ReelNavbar />
     </nav>
 
-    <div class="bg-yellow-400 flex-grow">
+    <div class="flex-grow min-w-0">
       <RouterView />
     </div>
 

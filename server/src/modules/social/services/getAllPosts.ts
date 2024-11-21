@@ -45,7 +45,7 @@ export default async function getAllPosts (req: Request, res: Response) {
   // Filter posts that are viewable
   const viewablePosts = posts.filter(post => {
     const postAuthorId = post.author.toString();
-    const postId = post._id.toString();
+    const postId = post.id.toString();
     const isBlocked = blockedUserIds.has(postAuthorId);
     const isFollowed = followedUserIds.has(postAuthorId);
 

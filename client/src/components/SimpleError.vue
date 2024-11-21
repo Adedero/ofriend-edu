@@ -4,12 +4,16 @@ interface Props {
   severity?: string;
   closable?: boolean;
   message?: null | string | number;
+  class?: string;
+  life?: number;
 }
-
 const { severity = 'error', closable = true } = defineProps<Props>();
 </script>
+
 <template>
-  <Message :icon :severity :closable>
-    <p class="text-sm">{{ message }}</p>
+  <Message :class :icon :severity :closable :life>
+    <slot>
+      <p class="text-sm">{{ message }}</p>
+    </slot>
   </Message>
 </template>

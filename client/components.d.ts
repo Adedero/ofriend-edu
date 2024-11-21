@@ -18,6 +18,8 @@ declare module 'vue' {
     FetchError: typeof import('./src/components/FetchError.vue')['default']
     FlaggedSigninMessage: typeof import('./src/components/FlaggedSigninMessage.vue')['default']
     GoogleAuth: typeof import('./src/modules/auth/components/GoogleAuth.vue')['default']
+    IconField: typeof import('primevue/iconfield')['default']
+    InputIcon: typeof import('primevue/inputicon')['default']
     InputOtp: typeof import('primevue/inputotp')['default']
     InputText: typeof import('primevue/inputtext')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
@@ -27,6 +29,9 @@ declare module 'vue' {
     MyAvatar: typeof import('./src/components/MyAvatar.vue')['default']
     MyIcon: typeof import('./src/components/MyIcon.vue')['default']
     Password: typeof import('primevue/password')['default']
+    PostCreator: typeof import('./src/modules/content-reel/components/post/PostCreator.vue')['default']
+    PostCreatorMediaAttacher: typeof import('./src/modules/content-reel/components/post/PostCreatorMediaAttacher.vue')['default']
+    PostCreatorMediaAttachment: typeof import('./src/modules/content-reel/components/post/PostCreatorMediaAttachment.vue')['default']
     ReekRightSidebarFollowing: typeof import('./src/modules/content-reel/components/ReekRightSidebarFollowing.vue')['default']
     ReelNavbar: typeof import('./src/modules/content-reel/components/shared/ReelNavbar.vue')['default']
     ReelNavbarMobile: typeof import('./src/modules/content-reel/components/shared/ReelNavbarMobile.vue')['default']
@@ -44,6 +49,8 @@ declare module 'vue' {
     Skeleton: typeof import('primevue/skeleton')['default']
     SwitchCase: typeof import('./src/components/switch-case/SwitchCase.vue')['default']
     SwitchCaseItem: typeof import('./src/components/switch-case/SwitchCaseItem.vue')['default']
+    Textbox: typeof import('./src/components/Textbox.vue')['default']
+    UserMention: typeof import('./src/modules/content-reel/components/UserMention.vue')['default']
     ViewContainer: typeof import('./src/components/ViewContainer.vue')['default']
   }
 }

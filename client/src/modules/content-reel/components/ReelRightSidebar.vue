@@ -4,10 +4,9 @@ import { onMounted, ref } from 'vue';
 import type { Follows } from '../types';
 import useFetch from '@/composables/use-fetch';
 import fetchErrorHandler from '@/composables/use-fetch/functions/fetch-error-handler';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
 
 const loading = ref(false);
 const err = ref<null | UseFetchError> (null);
@@ -21,7 +20,7 @@ const getFollows = async () => {
   loading.value = false;
 
   if (error.value) {
-    err.value = fetchErrorHandler(error.value, router, route.fullPath);
+    err.value = fetchErrorHandler(error.value, router);
     return;
   }
   if (!data.value) return;

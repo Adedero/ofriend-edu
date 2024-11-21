@@ -2,7 +2,7 @@ import type { Router } from "vue-router";
 import type { UseFetchError } from "./fetch-error-creator";
 import signout from "@/utils/functions/signout";
 
-export default function fetchErrorHandler (error: UseFetchError | null, router: Router, redirectUrl?: string) {
+export default function fetchErrorHandler (error: UseFetchError | null, router: Router) {
   if (!error) {
     return null;
   }
@@ -10,7 +10,7 @@ export default function fetchErrorHandler (error: UseFetchError | null, router: 
     /* if (error.name === 'SuspiciousLoginAttemptError') {
       return null;
     } */
-    signout(router, redirectUrl);
+    signout(router, router.currentRoute.value.fullPath);
     return null;
   }
   if (error.status === 403) {

@@ -2,20 +2,31 @@
 interface Props {
   text?: string;
   textPos?: string;
+  type?: string;
 }
 
-const { textPos = 'right' } = defineProps<Props>();
+const { type = '', textPos = 'right' } = defineProps<Props>();
 </script>
 
 <template>
-  <div class="flex items-center gap-2">
-    <slot name="loader">
-      <div class="loader" :class="{ 'order-2': textPos === 'left' }"></div>
-    </slot>
-    <slot name="text">
-      <p v-if="text">{{ text }}</p>
-    </slot>
-  </div>
+  <SwitchCase :case="type">
+    <SwitchCaseItem value="spinner">
+      <div class="flex items-center gap-2">
+        <slot name="loader">
+          <div class="loader" :class="{ 'order-2': textPos === 'left' }"></div>
+        </slot>
+        <slot name="text">
+          <p v-if="text">{{ text }}</p>
+        </slot>
+      </div>
+    </SwitchCaseItem>
+
+    <SwitchCaseItem value="spinner-variant">
+      <div class="grid place-content-center">
+        <span class="pi pi-spinner pi pi-spin text-accent" style="font-size: 1.2rem"></span>
+      </div>
+    </SwitchCaseItem>
+  </SwitchCase>
 </template>
 
 <style scoped>

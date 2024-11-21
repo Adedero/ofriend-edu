@@ -3,6 +3,9 @@ import SocialController from './controller';
 
 const router = Router();
 
+//User
+router.get('/user/search', SocialController.searchAndGetUsers);
+
 //Post
 router.get('/post', SocialController.getAllPosts);
 
