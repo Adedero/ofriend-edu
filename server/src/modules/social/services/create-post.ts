@@ -1,12 +1,14 @@
 import { type Request, Response } from 'express';
 import { ExpressUser } from '../../../types/express-user.type';
 import { db } from '../../../database/db-models';
+import useBucket, { FileData } from '../../../utils/use-bucket';
 
 interface Post {
   textContent: string;
   status: string;
   hasText: boolean;
   hasMedia: boolean;
+  media?: { url: string; name: string; mimetype: string }[];
   mentions?: { id: string; name: string }[];
   reposting?: boolean;
   repostedPost?: string;
@@ -20,80 +22,23 @@ export default async function createPost(req: Request, res: Response) {
     return;
   }
   const parsedPost: Post = JSON.parse(post);
-  let media = [];
+  
+  let media: FileData[] = [];
+
   if (req.files) {
-    console.log(req.files)
-  }
-  /* 
-  let { post } = req.body;
-    if (!post) {
-      return res.status(400).json({
-        success: false,
-        info: 'Failed to create post',
-        message: 'Your post cannot be empty.'
-      });
+    console.log(req.files);
+    const { error, data } = await (useBucket(req.files, { path: 'POSTS' }).upload());
+    if (error) {
+      res.status(400).json({ message: error });
     }
-    const user = req.user;
-    post = JSON.parse(post);
-    let media = [];
+    if (data) media = data;
+  }
 
-    try {
-      if (req.files) {
-        try {
-          media = await uploadMultipleFiles(req.files, {
-            path: "POSTS"
-          });
-        } catch (err) {
-          console.error('Error uploading files: ', err);
-          throw new Error('Error uploading files: ' + err);
-        }
-      }
+  parsedPost.hasMedia = media.length > 0;
+  parsedPost.media = media;
 
-      if (media.length) {
-        post.hasMedia = true;
-        post.media = media;
-      } else {
-        post.hasMedia = false;
-        post.media = [];
-      }
+  const newPost = new db.Post({ ...parsedPost, author: user.id });
+  await newPost.save();
 
-      const processedPost = {
-        authorId: user.id,
-        ...post
-      };
-
-      if (processedPost.isReposting && processedPost.repostedPostId) {
-        const newPost = await sequelize.transaction(async (t) => {
-          const createdPost = await Post.create(processedPost, { transaction: t });
-          await Post.increment(
-            { repostsCount: 1 },
-            { where: { id: processedPost.repostedPostId }, transaction: t }
-          )
-          return createdPost;
-        });
-
-        return res.status(200).json({
-          success: true,
-          info: 'Post created',
-          message: 'Your post has been created successfully.',
-          post: newPost
-        });
-      } else {
-        const newPost = await Post.create(processedPost);
-
-        return res.status(200).json({
-          success: true,
-          info: 'Post created',
-          message: 'Your post has been created successfully.',
-          post: newPost
-        });
-      }
-    } catch (error) {
-      console.error('Error creating post:', error);
-      return res.status(500).json({
-        success: false,
-        info: 'Failed to create post',
-        message: 'An error occurred while creating the post.'
-      });
-    } */
+  res.status(200).json({ postId: newPost._id });
 }

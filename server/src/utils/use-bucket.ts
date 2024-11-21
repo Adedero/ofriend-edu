@@ -1,142 +1,155 @@
-const fs = require('node:fs/promises');
-const { getDownloadURL } = require('firebase-admin/storage');
-const bucket = require('../config/firebase-admin.config');
+import fs from 'node:fs/promises';
+import { getDownloadURL } from 'firebase-admin/storage';
+import bucket from '../config/firebase-admin.config';
+import type { FileArray, UploadedFile } from 'express-fileupload';
+import { generateRandomPin } from './pin-generator';
+import logger from '../config/winston.config';
 
-// Upload multiple files
-async function uploadMultipleFiles(files, options = {}) {
-  options = {
-    path: "",
-    timeout: 1000 * 60,
-    ...options
-  }
+interface UseBucketOptions {
+  path?: string;
+  timeout?: number;
+};
 
-  let fileArray;
-  if (Array.isArray(files)) fileArray = [...files];
-  else fileArray = Object.keys(files).map(key => files[key]);
-
-  if (!fileArray) {
-    throw new Error("No files were provided.")
-  }
-
-  try {
-    const uploadPromises = fileArray.map(file => uploadSingleFile(file, options));
-    return await Promise.all(uploadPromises);
-  } catch (error) {
-    console.error("Error uploading files:", error.message);
-    throw new Error(`Error uploading files: ${error.message}`);
-  }
+export interface FileData {
+  id: string;
+  name: string;
+  url: string;
+  mimetype: string;
 }
 
-// Upload a single file
-async function uploadSingleFile(file, options = {}) {
-  options = {
-    path: "",
-    timeout: 1000 * 60,
-    ...options
-  }
-  const timestamp = Date.now();
-  const randomString = Math.random().toString(36).substring(2, 8);
-  const fileName = `${timestamp}-${randomString}-${file.name}`;
+interface Result<T> {
+  error: string | null;
+  data: T | null;
+}
 
-  const timeout = options.timeout;
-  if (typeof timeout !== 'number') timeout = 0;
-  let timer;
+const useBucket = (
+  filesOrFileArray: UploadedFile[] | FileArray,
+  options: UseBucketOptions
+) => {
+  const defaultOptions: UseBucketOptions = {
+    path: '',
+    timeout: 60 * 1000,
+    ...options
+  };
+
+  let fileArray : UploadedFile[] = filesOrFileArray as UploadedFile[];
+  if (!Array.isArray(filesOrFileArray)) {
+    fileArray = Object.keys(filesOrFileArray).map(key => filesOrFileArray[key]).flat();
+  }
+
+  return {
+    upload: async () => await uploadMultipleFiles(fileArray, defaultOptions),
+    delete: async () => await deleteMultipleFiles(fileArray, defaultOptions)
+  };
+};
+
+async function uploadSingleFile(file: UploadedFile, options: UseBucketOptions): Promise<Result<FileData>> {
+  const { path, timeout } = options;
+  const timestamp = Date.now();
+  const randomString = generateRandomPin(6, 'alpha');
+  const fileName = `${timestamp}-${randomString}-${file.name}`;
+  let timer: NodeJS.Timeout | null = null;
 
   try {
     if (timeout) {
       timer = setTimeout(() => {
-        throw new Error("The request took too long to complete.");
+        throw new Error('Upload request timed out');
       }, timeout);
     }
 
     const uploadedFile = await bucket.upload(file.tempFilePath, {
-      destination: `${options.path}/${fileName}`,
-      metadata: {
-        contentType: file.mimetype
-      }
+      destination: `${path}/${fileName}`,
+      metadata: { contentType: file.mimetype },
     });
 
-    const fileRef = bucket.file(uploadedFile[0].metadata.name);
+    const fileRef = bucket.file(uploadedFile[0]?.metadata.name ?? '');
     const downloadURL = await getDownloadURL(fileRef);
 
     return {
-      id: `${timestamp}-${randomString}`,
-      url: downloadURL,
-      type: file.mimetype,
-      name: fileName,
+      error: null,
+      data: {
+        id: `${timestamp}-${randomString}`,
+        url: downloadURL,
+        mimetype: file.mimetype,
+        name: fileName,
+      },
     };
   } catch (error) {
-    console.error(`Error uploading file ${file.name}: ${error.message}`);
-    throw new Error(`Error uploading file ${file.name}: ${error.message}`);
+    console.error(`Error uploading file ${file.name}:`, (error as Error).message);
+    return { error: `Error uploading file ${file.name}: ${(error as Error).message}`, data: null };
   } finally {
     if (timer) clearTimeout(timer);
-    // Cleanup the temp file
-    await fs.unlink(file.tempFilePath).catch(err => console.error(`Error deleting file from disk: ${err.message}`));
+    await cleanupTempFile(file.tempFilePath);
   }
 }
 
-
-// Delete multiple files
-async function deleteMultipleFiles(files = [], options = {}) {
-  options = {
-    path: "",
-    useURL: false,
-    timeout: 1000 * 60,
-    ...options
-  }
-  if (!options.useURL && !options.path) {
-    throw new Error("File path must be specified when not using a URL");
-  }
-
+async function uploadMultipleFiles(files: UploadedFile[], options: UseBucketOptions): Promise<Result<FileData[]>> {
   try {
-    const deletePromises = files.map(file => deleteSingleFile(file, options));
-    return await Promise.all(deletePromises);
+    if (!files.length) {
+      throw new Error('No files provided');
+    }
+
+    const uploadPromises = files.map(file => uploadSingleFile(file, options));
+    const results = await Promise.all(uploadPromises);
+
+    const data: FileData[] = results.map(result => result.data).filter(Boolean) as FileData[];
+
+    return {
+      error: null,
+      data,
+    };
   } catch (error) {
-    console.error("Error deleting files:", error.message);
-    throw new Error(`Error deleting files: ${error.message}`);
+    console.error("Error uploading files:", (error as Error).message);
+    return { error: `Error uploading files: ${(error as Error).message}`, data: null };
   }
 }
 
-// Delete a single file
-async function deleteSingleFile(file, options = {}) {
-  options = {
-    path: "",
-    useURL: false,
-    timeout: 1000 * 60,
-    ...options
-  }
-  if (!options.useURL && !options.path) {
-    throw new Error("File path must be specified when not using a URL");
-  }
 
-  const timeout = options.timeout;
-  if (typeof timeout !== 'number') timeout = 0;
-  let timer;
+async function cleanupTempFile(tempFilePath: string) {
+  try {
+    await fs.unlink(tempFilePath);
+  } catch (error) {
+    logger.error(`Error cleaning up temporary file: ${(error as Error).message}`);
+  }
+}
+
+async function deleteSingleFile(file: UploadedFile, options: UseBucketOptions): Promise<Result<null>> {
+  const { path, timeout } = options;
+  let timer: NodeJS.Timeout | null = null;
 
   try {
     if (timeout) {
       timer = setTimeout(() => {
-        throw new Error("The request took too long to complete.");
+        throw new Error('Delete request timed out');
       }, timeout);
     }
-
-    let filePath;
-    if (options.useURL) {
-      const fileUrl = new URL(file.url || file);
-      filePath = decodeURIComponent(fileUrl.pathname.split('/o/')[1].split('?')[0]);
-    } else {
-      filePath = `${options.path}/${file.name}`;
-    }
-
+    const filePath = `${path}/${file.name}`;
     const fileRef = bucket.file(filePath);
     await fileRef.delete();
-    console.log(`File ${filePath} deleted successfully.`);
-  } catch (err) {
-    console.error(`Error deleting file: ${err.message}`);
-    throw new Error(`Error deleting file: ${err.message}`);
+    return { error: null, data: null };
+  } catch (error) {
+    console.error((error as Error).message);
+    return { error: (error as Error).message, data: null };
   } finally {
     if (timer) clearTimeout(timer);
   }
 }
 
-module.exports = { uploadMultipleFiles, uploadSingleFile, deleteMultipleFiles, deleteSingleFile };
+async function deleteMultipleFiles(files: UploadedFile[], options: UseBucketOptions): Promise<Result<null>> {
+  try {
+    if (!files.length) {
+      throw new Error('No files provided');
+    }
+    const deletePromises = files.map(file => deleteSingleFile(file, options));
+    await Promise.all(deletePromises);
+    return {
+      error: null,
+      data: null
+    };
+  } catch (error) {
+    console.error((error as Error).message);
+    return { error: (error as Error).message, data: null };
+  }
+}
+
+export default useBucket;

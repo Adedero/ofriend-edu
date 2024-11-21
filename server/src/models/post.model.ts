@@ -6,14 +6,14 @@ export interface PostModel extends Document {
   hasText: boolean;
   textContent?: string;
   hasMedia: boolean;
-  media?: { url: string; ext: string; type: string }[];
+  media?: { url: string; name: string; mimetype: string }[];
   likesCount: number;
   commentsCount: number;
   repostsCount: number;
   status: 'PUBLIC' | 'PRIVATE' | 'FOLLOWERS';
   isVisibleToViewer: boolean;
   isEdited: boolean;
-  isReposting: boolean;
+  reposting: boolean;
   repostedPost?: Schema.Types.ObjectId;
   mentions: { id: Schema.Types.ObjectId; name: string }[];
   isLikedByViewer: boolean;
@@ -37,7 +37,7 @@ const postSchema = new Schema<PostModel>({
   status: { type: String, enum: ['PUBLIC', 'PRIVATE', 'FOLLOWERS'], required: true, default: 'PUBLIC', index: true },
   isVisibleToViewer: { type: Boolean, required: true, default: true },
   isEdited: { type: Boolean, required: true, default: false },
-  isReposting: { type: Boolean, required: true, default: false },
+  reposting: { type: Boolean, required: true, default: false },
   repostedPost: { type: Schema.Types.ObjectId, ref: 'Post' },
   mentions: { userId: Schema.Types.ObjectId, mentionText: String },
   isLikedByViewer: { type: Boolean, required: true, default: false },
@@ -50,6 +50,40 @@ postSchema.pre('find', function (next) {
   this.sort({ updatedAt: -1 });
   next();
 });
+
+// Pre-save hook to handle repost count logic
+postSchema.pre('save', async function (next) {
+  const post = this as PostModel;
+  if (post.reposting && post.repostedPost) {
+    await Post.updateOne(
+      { _id: post.repostedPost },
+      { $inc: { repostsCount: 1 } }
+    );
+  }
+
+  if (!post.reposting && post.repostedPost) {
+    await Post.updateOne(
+      { _id: post.repostedPost },
+      { $inc: { repostsCount: -1 } }
+    );
+  }
+
+  next();
+});
+
+
+postSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  const post = this as PostModel;
+
+  if (post.reposting && post.repostedPost) {
+    await Post.updateOne(
+      { _id: post.repostedPost },
+      { $inc: { repostsCount: -1 } }
+    );
+  }
+  next();
+});
+
 
 const Post = model<PostModel>('Post', postSchema);
 
