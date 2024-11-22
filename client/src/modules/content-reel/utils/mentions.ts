@@ -13,6 +13,11 @@ export const handleMention = (
   document.getElementById(textareaId)?.focus();
 };
 
+interface ParsedMentions {
+  userId: string;
+  name: string;
+}
+
 export const parseMentions = (input: string, mentions: MentionedUser[]) => {
   const outputHTML = parseUrlsAndMentions(input);
 
@@ -21,7 +26,7 @@ export const parseMentions = (input: string, mentions: MentionedUser[]) => {
   par.innerHTML = outputHTML;
   document.body.appendChild(par);
 
-  const filteredMentions: MentionedUser[] = [];
+  const filteredMentions: ParsedMentions[] = [];
 
   const tags = par.querySelectorAll('.mention-link') as NodeListOf<HTMLParagraphElement>;
   tags.forEach(tag => {
@@ -32,7 +37,7 @@ export const parseMentions = (input: string, mentions: MentionedUser[]) => {
     if (user) {
       tag.innerText = `@${user.name}`;
       tag.setAttribute('data-user', user.id)
-      filteredMentions.push({ id: user.id, name: user.name });
+      filteredMentions.push({ userId: user.id, name: user.name });
     }
   });
   document.body.removeChild(par);

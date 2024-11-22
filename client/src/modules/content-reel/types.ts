@@ -14,7 +14,7 @@ export interface Post {
   status: string;
   hasText: boolean;
   hasMedia: boolean;
-  mentions?: MentionedUser[];
+  mentions?: { userId: string; name: string}[];
   reposting?: boolean;
   repostedPost?: string;
 }
@@ -33,7 +33,7 @@ export interface FullPost {
   isVisibleToViewer: boolean;
   likesCount: number;
   media?: { url: string; name: string; mimetype: string }[];
-  mentions: { id: string; name: string }[];
+  mentions: { userId: string; name: string }[];
   repostedPost?: FullPost;
   reposting: boolean;
   repostsCount: number;

@@ -7,12 +7,14 @@ import SavedPost, { SavedPostModel } from '../models/saved-post.model';
 import Follow, { FollowModel } from '../models/follow.model';
 import Like, { LikeModel } from '../models/like.model';
 import Block, { BlockModel } from '../models/block.model';
+import Comment, { CommentModel } from '../models/comment.model';
 
 interface Models {
   User: Model<UserModel>;
   LoginSession: Model<LoginSessionModel>;
   OTP: Model<OTPModel>;
   Post: Model<PostModel>;
+  Comment: Model<CommentModel>;
   SavedPost: Model<SavedPostModel>;
   Follow: Model<FollowModel>;
   Like: Model<LikeModel>;
@@ -24,6 +26,7 @@ export const db: Models = {
   LoginSession,
   OTP,
   Post,
+  Comment,
   SavedPost,
   Follow,
   Like,

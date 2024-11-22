@@ -9,7 +9,7 @@ interface Post {
   hasText: boolean;
   hasMedia: boolean;
   media?: { url: string; name: string; mimetype: string }[];
-  mentions?: { id: string; name: string }[];
+  mentions?: { userId: string; name: string }[];
   reposting?: boolean;
   repostedPost?: string;
 }

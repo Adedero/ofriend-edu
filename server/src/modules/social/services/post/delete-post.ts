@@ -21,11 +21,6 @@ export default async function deletePost (req: Request, res: Response) {
     res.status(403).json({ message: 'You are not authorized to delete this post' });
     return;
   }
-
-  //Delete post likes
-    //delete post comments
-    //delete likes of each comment
-    //If post is reposting, decrease the repostsCount of the repostedPost 
-    //delete post
-
-}
+  await post.deleteOne();
+  res.status(200).json({ deleted: true });
+};

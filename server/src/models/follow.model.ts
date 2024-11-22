@@ -67,7 +67,6 @@ followSchema.pre('deleteOne', { document: true, query: false }, async function (
       session.startTransaction(); 
       await db.User.updateOne({ _id: follow.user }, { $inc: { followersCount: -1 } }, { session });
       await db.User.updateOne({ _id: follow.follower }, { $inc: { followingCount: -1 } }, { session });
-      await follow.deleteOne({ session });
       await session.commitTransaction();
       session.endSession();
       next();

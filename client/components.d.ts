@@ -22,6 +22,7 @@ declare module 'vue' {
     InputText: typeof import('primevue/inputtext')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
     LoadingBar: typeof import('./src/components/LoadingBar.vue')['default']
+    MediaContent: typeof import('./src/modules/content-reel/components/shared/MediaContent.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
     MyAvatar: typeof import('./src/components/MyAvatar.vue')['default']
@@ -45,6 +46,7 @@ declare module 'vue' {
     PostItemOptionSavePost: typeof import('./src/modules/content-reel/components/post/PostItemOptionSavePost.vue')['default']
     PostItemOptionToggleFollow: typeof import('./src/modules/content-reel/components/post/PostItemOptionToggleFollow.vue')['default']
     PostItemSkeleton: typeof import('./src/modules/content-reel/components/skeletons/PostItemSkeleton.vue')['default']
+    PostItemTextContent: typeof import('./src/modules/content-reel/components/post/PostItemTextContent.vue')['default']
     ProgressBar: typeof import('primevue/progressbar')['default']
     ReelNavbar: typeof import('./src/modules/content-reel/components/shared/ReelNavbar.vue')['default']
     ReelNavbarMobile: typeof import('./src/modules/content-reel/components/shared/ReelNavbarMobile.vue')['default']
@@ -59,6 +61,8 @@ declare module 'vue' {
     SwitchCase: typeof import('./src/components/switch-case/SwitchCase.vue')['default']
     SwitchCaseItem: typeof import('./src/components/switch-case/SwitchCaseItem.vue')['default']
     Textbox: typeof import('./src/components/Textbox.vue')['default']
+    TextContent: typeof import('./src/modules/content-reel/components/shared/TextContent.vue')['default']
+    TextContentItem: typeof import('./src/modules/content-reel/components/shared/TextContentItem.vue')['default']
     UserMention: typeof import('./src/modules/content-reel/components/UserMention.vue')['default']
   }
 }

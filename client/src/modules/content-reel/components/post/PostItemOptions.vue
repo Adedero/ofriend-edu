@@ -5,6 +5,9 @@ import type { UseFetchError } from '@/composables/use-fetch/functions/fetch-erro
 import { useRouter } from 'vue-router';
 import useFetch from '@/composables/use-fetch';
 import useUserStore from '@/stores/user.store';
+import { useEventBus } from '@vueuse/core';
+
+const bus = inject<ReturnType<typeof useEventBus<{ name: string, data: boolean }>>>('bus');
 
 const router = useRouter();
 
@@ -37,6 +40,10 @@ const handleToggleSave = (saved: boolean) => {
   if (saveStatus.value) saveStatus.value.saved = saved;
 };
 
+const edit = () => {
+  bus?.emit({ name: 'edit-post', data: true });
+}
+
 onMounted(async () =>{
   await getPostSaveStatus()
 });
@@ -58,7 +65,7 @@ onMounted(async () =>{
 
       <div v-if="post.isViewedByAuthor && post.author._id === userStore.user?.id">
         <Divider />
-        <Button label="Edit post" icon="pi pi-file-edit" text severity="secondary" fluid class="flex justify-normal" />
+        <Button @click="edit" label="Edit post" icon="pi pi-file-edit" text severity="secondary" fluid class="flex justify-normal" />
         <PostItemOptionDeletePost />
       </div>
     </div>
