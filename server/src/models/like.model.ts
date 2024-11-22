@@ -2,8 +2,8 @@ import { Document, model, Schema } from "mongoose";
 
 export interface LikeModel extends Document {
   liker: Schema.Types.ObjectId;
-  target: Schema.Types.ObjectId;
-  targetType: 'Post' | 'Comment';
+  post: Schema.Types.ObjectId;
+  comment?: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,20 +15,16 @@ const likeSchema = new Schema<LikeModel>({
     ref: 'User',
     index: true
   },
-  targetType: {
-    type: String,
-    enum: ['Post', 'Comment'],
-    required: true,
-    index: true,
-    default: 'Post'
-  },
-  target: {
+  post: {
     type: Schema.Types.ObjectId,
-    required: true,
     index: true,
-    refPath: function() {
-      return this.targetType
-    }
+    ref: 'Post',
+    required: true
+  },
+  comment: {
+    type: Schema.Types.ObjectId,
+    index: true,
+    ref: 'Comment'
   }
 }, { timestamps: true });
 

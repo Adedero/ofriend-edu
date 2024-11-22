@@ -4,28 +4,33 @@ import type { FullPost } from '../../types';
 import type { UseFetchError } from '@/composables/use-fetch/functions/fetch-error-creator';
 import { useRouter } from 'vue-router';
 import useFetch from '@/composables/use-fetch';
+import { useEventBus } from '@vueuse/core';
+
+const bus = inject<ReturnType<typeof useEventBus<{ name: string, data: string }>>>('bus');
 
 const router = useRouter();
 
 const post = inject<FullPost>('post');
 
-const following = ref(false)
-watchEffect(() => following.value = post ? post.viewerFollowsAuthor: false);
+const blocked = ref(false)
 
 const loading = ref(false);
 const err = ref<UseFetchError | null>(null);
 
-const toggleUserFollow = async () => {
+const block = async () => {
   if (!post) return;
   err.value = null;
   loading.value = true;
-  const { data, error } = await useFetch<{ following: boolean }>(
-    `social/follow/${post.author._id}`, { method: 'POST', router }
+  const { data, error } = await useFetch<{ blocked: boolean }>(
+    `social/block/${post.author._id}`, { method: 'POST', router }
   )
   loading.value = false;
   err.value = error.value;
   if (err.value || !data.value) return;
-  if (data.value) following.value = data.value.following;
+  blocked.value = data.value.blocked;
+  if (blocked.value) {
+    bus?.emit({ name: 'block-user', data: post.author._id });
+  }
 }
 
 const firstName = computed(() => post?.author.name.split(' ')[0] ?? '');
@@ -33,10 +38,8 @@ const firstName = computed(() => post?.author.name.split(' ')[0] ?? '');
 
 <template>
   <div v-if="post">
-    <Button @click="toggleUserFollow"
-    :label="following ? `Unfollow ${firstName}` : `Follow ${firstName}`"
-    :icon="following ? 'pi pi-user-minus' : 'pi pi-user-plus'" text severity="secondary"  class="flex justify-normal"
-    :class="{ 'text-turquoise': following }" :loading />
+    <Button @click="block" :loading :label="'Block '+ firstName" icon="pi pi-ban" text severity="secondary"
+      class="text-left flex justify-normal" />
     <SimpleError v-if="err" :message="err.message"  />
   </div>
 </template>

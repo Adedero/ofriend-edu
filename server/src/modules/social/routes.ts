@@ -21,6 +21,7 @@ router.route('/post')
 
 router.route('/post/:post_id')
   .get(SocialController.getPostById)
+  .delete(SocialController.deletePost)
 
 router.route('/post/save/:post_id')
   .get(SocialController.getPostSaveStatus)
@@ -31,5 +32,10 @@ router.route('/follow/:user_id?')
   .get(SocialController.getFollows) //get followers
   .post(SocialController.toggleFollow) //Follow or unfollow
 
+//Block
+router.route('/block/:id?')
+  .get(SocialController.getBlocks) // /block: get people that have been blocked by req.user
+  .post(SocialController.toggleBlock) // /block/user_id block or unblock the user with id: user_id
+  .delete(SocialController.deleteBlock) // block/block_id delete a block record using the block_id
 
 export default router;

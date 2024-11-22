@@ -4,11 +4,13 @@ import type { FullPost } from '../../types';
 import type { UseFetchError } from '@/composables/use-fetch/functions/fetch-error-creator';
 import { useRouter } from 'vue-router';
 import useFetch from '@/composables/use-fetch';
+import useUserStore from '@/stores/user.store';
 
 const router = useRouter();
 
-const post = inject<FullPost>('post');
+const userStore = useUserStore();
 
+const post = inject<FullPost>('post');
 const loading = ref(false);
 const err = ref<UseFetchError | null>(null);
 
@@ -46,9 +48,18 @@ onMounted(async () =>{
     <FetchError v-else-if="err" :error="err" @retry="getPostSaveStatus" :show-icon="false" />
     <div v-else-if="saveStatus">
       <PostItemOptionCopyLink />
-      <PostItemOptionSavePost :saved="saveStatus.saved" @toggle-save="handleToggleSave" />
-      <div v-if="!post.isViewedByAuthor">
+      <PostItemOptionBlockUser />
+      <div v-if="!post.isViewedByAuthor && post.author._id !== userStore.user?.id">
+        <PostItemOptionSavePost :saved="saveStatus.saved" @toggle-save="handleToggleSave" />
         <PostItemOptionToggleFollow />
+        <PostItemOptionBlockUser />
+        <!-- Option to report post -->
+      </div>
+
+      <div v-if="post.isViewedByAuthor && post.author._id === userStore.user?.id">
+        <Divider />
+        <Button label="Edit post" icon="pi pi-file-edit" text severity="secondary" fluid class="flex justify-normal" />
+        <PostItemOptionDeletePost />
       </div>
     </div>
   </div>
