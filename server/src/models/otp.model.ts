@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 export interface OTPModel {
   value: number;
   expiresAt: Date;
-  userId: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
 }
 
 const otpSchema = new Schema<OTPModel>({
@@ -22,7 +22,7 @@ const otpSchema = new Schema<OTPModel>({
     required: true,
     default: () => new Date(Date.now() + 60 * 60 * 1000),
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,

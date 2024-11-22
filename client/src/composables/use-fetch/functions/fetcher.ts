@@ -2,6 +2,7 @@ import { ref, watch } from 'vue';
 import useUserStore from '@/stores/user.store';
 import createError, { type UseFetchError } from '@/composables/use-fetch/functions/fetch-error-creator';
 import type { FetchConfig, Done } from '../types';
+import fetchErrorHandler from './fetch-error-handler';
 
 
 export default async function fetcher<T = Record<string, unknown>>(url: string, config: FetchConfig, done?: Done<T>) {
@@ -18,7 +19,16 @@ export default async function fetcher<T = Record<string, unknown>>(url: string, 
   const _fetch = async (api: string) => {
     if (loading.value) return;
 
-    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+    const headers: HeadersInit = {};
+
+    const body = config.body ?
+      (config.body instanceof FormData ? config.body : JSON.stringify(config.body)) :
+      null;
+
+    if (body && !(body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     if (config.withCredentials) {
       const userStore = useUserStore();
       const token = userStore.user?.token ?? '';
@@ -40,12 +50,10 @@ export default async function fetcher<T = Record<string, unknown>>(url: string, 
     const fetchApiOptions = {
       method: config.method || 'GET',
       headers: { ...headers, ...config.headers } as HeadersInit,
-      body: config.body ?
-        (config.body instanceof FormData ? config.body : JSON.stringify(config.body)) :
-        null,
+      body,
       signal: abortController.signal,
     }
-    
+
     try {
       const response = await fetch(fullUrl, fetchApiOptions);
 
@@ -65,6 +73,10 @@ export default async function fetcher<T = Record<string, unknown>>(url: string, 
       data.value = payload;
       if (done && typeof done === 'function') done(data.value);
     } catch (err) {
+      if (config.router) {
+        error.value = fetchErrorHandler(err as UseFetchError, config.router);
+        return;
+      }
       error.value = err as UseFetchError;
     } finally {
       loading.value = false;

@@ -12,7 +12,7 @@ export default async function cachedFetcher<T = Record<string, unknown>>(
   config.revalidate ??= true;
 
   // Generate a unique key based on URL and config options (e.g., body, headers)
-  const key = `${url}:${JSON.stringify(config)}`;
+  const key = url;
 
   const response = await fetcher<T>(url, { ...config, skip: true });
 

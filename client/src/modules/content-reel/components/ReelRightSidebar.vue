@@ -3,7 +3,6 @@ import type { UseFetchError } from '@/composables/use-fetch/functions/fetch-erro
 import { onMounted, ref } from 'vue';
 import type { Follows } from '../types';
 import useFetch from '@/composables/use-fetch';
-import fetchErrorHandler from '@/composables/use-fetch/functions/fetch-error-handler';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -16,13 +15,13 @@ const AMOUNT = 3;
 const getFollows = async () => {
   err.value = null;
   loading.value = true;
-  const { data, error } = await useFetch<Follows>(`social/follow?skip=0&limit=${AMOUNT}&type=followers,following`, { cache: true });
+  const { data, error } = await useFetch<Follows>(
+    `social/follow?skip=0&limit=${AMOUNT}&type=followers,following`, { cache: true, router }
+  );
   loading.value = false;
 
-  if (error.value) {
-    err.value = fetchErrorHandler(error.value, router);
-    return;
-  }
+  err.value = error.value;
+
   if (!data.value) return;
   follows.value = data.value;
 };

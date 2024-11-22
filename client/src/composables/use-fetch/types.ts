@@ -1,4 +1,7 @@
+import type { Router } from "vue-router";
+
 export interface FetchConfig {
+  router?: null | Router;
   baseUrl?: string;
   body?: null | string | FormData | Record<string, unknown>;
   cache?: boolean;

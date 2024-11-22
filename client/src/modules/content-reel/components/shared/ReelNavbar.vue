@@ -16,7 +16,7 @@ const socialNavClasses = computed(() => ({
   'lg:w-full': !minimized,
 }));
 
-const menu = ref()
+const menu = ref();
 const items = ref([
   {
     label: 'Profile',
@@ -26,7 +26,7 @@ const items = ref([
       { label: userStore.user?.bio ? userStore.user.bio.slice(0, 20) + '...' : '', icon: 'pi pi-info-circle' }
     ]
   }
-])
+]);
 
 const toggle = (event: Event) => {
   menu.value.toggle(event)
@@ -75,7 +75,7 @@ const toggle = (event: Event) => {
 
 <style scoped>
 a.social-nav {
-  @apply flex items-center gap-4 p-5 rounded-lg transition-colors hover:bg-turquoise/10;
+  @apply flex items-center gap-4 p-4 rounded-lg transition-colors hover:bg-turquoise/10;
 }
 
 a.social-nav.maximized.router-link-exact-active {

@@ -62,7 +62,7 @@ async function uploadSingleFile(file: UploadedFile, options: UseBucketOptions): 
       metadata: { contentType: file.mimetype },
     });
 
-    const fileRef = bucket.file(uploadedFile[0]?.metadata.name ?? '');
+    const fileRef = bucket?.file(uploadedFile[0].metadata.name ?? '');
     const downloadURL = await getDownloadURL(fileRef);
 
     return {
@@ -123,6 +123,7 @@ async function deleteSingleFile(file: UploadedFile, options: UseBucketOptions): 
         throw new Error('Delete request timed out');
       }, timeout);
     }
+
     const filePath = `${path}/${file.name}`;
     const fileRef = bucket.file(filePath);
     await fileRef.delete();

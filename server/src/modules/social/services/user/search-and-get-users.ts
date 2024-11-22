@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { db } from './../../../database/db-models';
-import { ExpressUser } from '../../../types/express-user.type';
+import { db } from './../../../../database/db-models';
+import { ExpressUser } from '../../../../types/express-user.type';
 
 const LIMIT = 10;
 export default async function searchAndGetUsers (req: Request, res: Response) {

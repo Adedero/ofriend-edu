@@ -39,10 +39,10 @@ export default async function verifyAccount (req: Request, res: Response) {
 };
 
 async function addCurrentIpAndUserAgent (userId: string, req: Request) {
-  let session = await db.LoginSession.findOne({ userId });
+  let session = await db.LoginSession.findOne({ user: userId });
   if (!session) {
     session = new db.LoginSession({
-      userId,
+      user: userId,
       ipAddresses: [req.ip],
       userAgents: [req.headers['user-agent']]
     });

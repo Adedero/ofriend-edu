@@ -15,7 +15,7 @@ passport.use(new Strategy(jwtOptions, async (payload: { id: string }, done: Call
   try {
     const [ user, loginSession ] = await Promise.all([
       db.User.findById(payload.id).lean(),
-      db.LoginSession.findOne({ userId: payload.id }, { token: 1 }).lean()
+      db.LoginSession.findOne({ user: payload.id }, { token: 1 }).lean()
     ]);
     if (!user || !loginSession) return done(null, false);
     const updatedUser = { ...user, token: loginSession.token };
