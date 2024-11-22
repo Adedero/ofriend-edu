@@ -1,8 +1,20 @@
 import { type Request, Response} from 'express';
-import { ExpressUser } from '../../../types/express-user.type';
-import { db } from '../../../database/db-models';
+import { ExpressUser } from '../../../../types/express-user.type';
+import { db } from '../../../../database/db-models';
+import { validateUserId } from '../../utils/validate-ids';
 export default async function getFollows(req: Request, res: Response) {
-  const userId = (req.user as ExpressUser).id;
+  let userId: string | null = null;
+
+  const { user_id } = req.params;
+  if (user_id) {
+    const validatedId = validateUserId(user_id);
+    if (!validatedId.valid) {
+      res.status(400).json({ message: validatedId.message });
+      return;
+    }
+    userId = validatedId.value;
+  }
+  userId ??= (req.user as ExpressUser).id;
   const skip = parseInt(req.query.skip as string, 10) || 0;
   const limit = parseInt(req.query.limit as string, 10) || 10;
   const type = (req.query.type as string) || 'followers,following';

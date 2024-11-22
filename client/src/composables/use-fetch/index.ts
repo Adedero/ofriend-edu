@@ -13,7 +13,8 @@ const options: FetchConfig = {
   timeout: 60 * 1000,
   body: null,
   method: 'GET',
-  headers: {}
+  headers: {},
+  router: null,
 }
 
 export default async function useFetch<T = Record<string, unknown>>(url: string, config?: FetchConfig, done?: Done<T>) {

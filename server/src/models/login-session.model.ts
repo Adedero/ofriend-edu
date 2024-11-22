@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 export interface LoginSessionModel {
-  userId: Schema.Types.ObjectId; 
+  user: Schema.Types.ObjectId; 
   token?: string;
   lastLogin?: Date;
   createdAt?: Date;
@@ -10,7 +10,7 @@ export interface LoginSessionModel {
 }
 
 const loginSessionSchema = new Schema<LoginSessionModel>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   token: { type: String },
   lastLogin: { type: Date, default: Date.now },
   ipAddresses: { type: [String], default: [], required: true },

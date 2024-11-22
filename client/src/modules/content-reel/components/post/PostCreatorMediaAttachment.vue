@@ -4,6 +4,9 @@ import safeFileFormats from '@/data/safe-file-formats';
 
 const MAX_MEDIA_AMOUNT = 20;
 
+interface Props { loading?: boolean }
+defineProps<Props>();
+
 const emit = defineEmits(['upload', 'cancel']);
 
 const acceptedFileFormats = safeFileFormats.join(',');
@@ -78,7 +81,7 @@ onUnmounted(() => reset());
             {{ files.length }} {{ files.length > 1 ? 'files' : 'file' }} attached
           </p>
         </div>
-        <Button @click="reset" icon="pi pi-times-circle" severity="danger" text rounded />
+        <Button :loading @click="reset" icon="pi pi-times-circle" severity="danger" text rounded />
       </div>
 
       <Loader v-if="uploading" type="spinner" />

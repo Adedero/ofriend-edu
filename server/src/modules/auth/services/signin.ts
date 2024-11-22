@@ -30,21 +30,21 @@ export default async function signin (req: Request, res: Response) {
     return;
   }
 
-  let session = await db.LoginSession.findOne({ userId: user._id });
-  if (!session) {
-    session = new db.LoginSession({
-      userId: user._id,
-      ipAddresses: [req.ip],
-      userAgents: [req.headers['user-agent']],
-    });
-  }
-
   if (!await argon.verify(user.password, validatedPassword.value)) {
     res.status(400).json({ message: 'Incorrect password' });
     return;
   }
 
   const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+  
+  let session = await db.LoginSession.findOne({ user: user._id });
+  if (!session) {
+    session = new db.LoginSession({
+      user: user._id,
+      ipAddresses: [req.ip],
+      userAgents: [req.headers['user-agent']],
+    });
+  }
 
   session.token = token;
   session.lastLogin = new Date(Date.now());

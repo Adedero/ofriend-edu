@@ -10,7 +10,7 @@ interface OtpValidationReturnType {
   model: null | Document & OTPModel
 }
 export default async function validateOtp(userId: string, otp: number): Promise<OtpValidationReturnType> {
-  const existingOtp = await db.OTP.findOne({ userId });
+  const existingOtp = await db.OTP.findOne({ user: userId });
   if (!existingOtp) {
     return {
       value: otp,

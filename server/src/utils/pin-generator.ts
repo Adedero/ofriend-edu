@@ -3,8 +3,8 @@ import crypto from 'node:crypto';
 type PinType = 'numeric' | 'num' | 'alphabetic' | 'alpha' | 'alphanumeric' | 'alphanum';
 export function generateRandomPin(length: number = 10, type?: PinType) {
   const charSets = {
-    numeric: '0123456789',
-    num: '0123456789',
+    numeric: '123456789',
+    num: '123456789',
     alphabetic: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
     alpha: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
     alphanumeric: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
@@ -23,7 +23,6 @@ export function generateRandomPin(length: number = 10, type?: PinType) {
       pin += charSet[randomValue];
     }
   }
-
   return pin;
 }
 

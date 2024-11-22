@@ -67,7 +67,7 @@ const createPost = async () => {
   router.push({
     name: 'post',
     params: { post_id: data.value.postId as string}
-  })
+  });
 };
 </script>
 
@@ -89,7 +89,7 @@ const createPost = async () => {
 
     <div class="mt-3 flex items-start justify-between">
       <div class="flex items-start justify-center gap-2">
-        <PostCreatorMediaAttachment @upload="setFiles" @cancel="files = null" />
+        <PostCreatorMediaAttachment @upload="setFiles" @cancel="files = null" :loading="posting" />
       </div>
 
       <div class="flex items-center gap-3 relative">

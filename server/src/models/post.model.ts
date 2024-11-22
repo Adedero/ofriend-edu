@@ -11,8 +11,7 @@ export interface PostModel extends Document {
   commentsCount: number;
   repostsCount: number;
   status: 'PUBLIC' | 'PRIVATE' | 'FOLLOWERS';
-  isVisibleToViewer: boolean;
-  isEdited: boolean;
+  edited: boolean;
   reposting: boolean;
   repostedPost?: Schema.Types.ObjectId;
   mentions: { id: Schema.Types.ObjectId; name: string }[];
@@ -30,13 +29,12 @@ const postSchema = new Schema<PostModel>({
   hasText: { type: Boolean, required: true, default: false },
   textContent: { type: String },
   hasMedia: { type: Boolean, required: true, default: false },
-  media: { type: [Schema.Types.Mixed], default: [] },
+  media: { type: [{ url: String, name: String, mimetype: String }], default: [] },
   likesCount: { type: Number, required: true, default: 0 },
   commentsCount: { type: Number, required: true, default: 0 },
   repostsCount: { type: Number, required: true, default: 0 },
   status: { type: String, enum: ['PUBLIC', 'PRIVATE', 'FOLLOWERS'], required: true, default: 'PUBLIC', index: true },
-  isVisibleToViewer: { type: Boolean, required: true, default: true },
-  isEdited: { type: Boolean, required: true, default: false },
+  edited: { type: Boolean, required: true, default: false },
   reposting: { type: Boolean, required: true, default: false },
   repostedPost: { type: Schema.Types.ObjectId, ref: 'Post' },
   mentions: { userId: Schema.Types.ObjectId, mentionText: String },
@@ -54,31 +52,44 @@ postSchema.pre('find', function (next) {
 // Pre-save hook to handle repost count logic
 postSchema.pre('save', async function (next) {
   const post = this as PostModel;
+
   if (post.reposting && post.repostedPost) {
-    await Post.updateOne(
-      { _id: post.repostedPost },
-      { $inc: { repostsCount: 1 } }
-    );
-  }
+    try {
+      await Post.updateOne(
+        { _id: post.repostedPost },
+        { $inc: { repostsCount: 1 } }
+      );
+    } catch (error) {
+      return next(error as Error); 
+    }
+  };
 
   if (!post.reposting && post.repostedPost) {
-    await Post.updateOne(
-      { _id: post.repostedPost },
-      { $inc: { repostsCount: -1 } }
-    );
-  }
+    try {
+      await Post.updateOne(
+        { _id: post.repostedPost },
+        { $inc: { repostsCount: -1 } }
+      );
+      this.repostedPost = undefined;
+    } catch (error) {
+      return next(error as Error);
+    }
+  };
   next();
 });
-
 
 postSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
   const post = this as PostModel;
 
   if (post.reposting && post.repostedPost) {
-    await Post.updateOne(
-      { _id: post.repostedPost },
-      { $inc: { repostsCount: -1 } }
-    );
+    try {
+      await Post.updateOne(
+        { _id: post.repostedPost },
+        { $inc: { repostsCount: -1 } }
+      );
+    } catch (error) {
+      return next(error as Error);
+    }
   }
   next();
 });

@@ -1,7 +1,7 @@
 import { type Request, Response } from 'express';
-import { ExpressUser } from '../../../types/express-user.type';
-import { db } from '../../../database/db-models';
-import useBucket, { FileData } from '../../../utils/use-bucket';
+import { ExpressUser } from '../../../../types/express-user.type';
+import { db } from '../../../../database/db-models';
+import useBucket, { FileData } from '../../../../utils/use-bucket';
 
 interface Post {
   textContent: string;
@@ -16,17 +16,16 @@ interface Post {
 
 export default async function createPost(req: Request, res: Response) {
   const user = req.user as ExpressUser;
-  const post = req.body as string;
+  const { post } = req.body;
   if (!post) {
     res.status(400).json({ message: 'Post cannot be empty' });
     return;
-  }
+  };
   const parsedPost: Post = JSON.parse(post);
-  
+
   let media: FileData[] = [];
 
   if (req.files) {
-    console.log(req.files);
     const { error, data } = await (useBucket(req.files, { path: 'POSTS' }).upload());
     if (error) {
       res.status(400).json({ message: error });

@@ -66,12 +66,14 @@ function handleReload () {
     </div>
 
     <div v-else>
-      <Message severity="error">
+      <Message severity="error" class="flex">
         <p class="text-sm">{{ error.message }}</p>
+
+        <div v-if="reloadButton" class="mt-2">
+          <Button @click="handleReload" severity="danger" :label="reloadButtonLabel"
+            size="small" :loading="loading" icon="pi pi-refresh" />
+        </div>
       </Message>
-      <div v-if="reloadButton" class="mt-2">
-        <Button @click="handleReload" :label="reloadButtonLabel" size="small" :loading="loading" icon="pi pi-refresh" />
-      </div>
     </div>
   </div>
 </template>

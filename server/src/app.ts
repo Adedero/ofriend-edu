@@ -21,3 +21,5 @@ initializeRoutes(app);
 app.use(errorHandler);
 
 export default app;
+
+//Create a public link for sharing posts share/post_id

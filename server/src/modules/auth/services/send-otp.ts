@@ -25,10 +25,10 @@ export default async function sendOtpEmail(req: Request, res: Response) {
 
 
   const PIN_EXPIRY_TIME = '1 hour';
-  let otp = await db.OTP.findOne({ userId: user.id });
+  let otp = await db.OTP.findOne({ user: user.id });
   if (!otp) {
     otp = await new db.OTP({
-      userId: user.id,
+      user: user.id,
       value: generateRandomPin(6),
       expiresAt: setPinExpiryDate(PIN_EXPIRY_TIME)
     }).save();
