@@ -17,6 +17,7 @@ declare module 'vue' {
     FetchError: typeof import('./src/components/FetchError.vue')['default']
     FlaggedSigninMessage: typeof import('./src/components/FlaggedSigninMessage.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
+    Image: typeof import('primevue/image')['default']
     InputIcon: typeof import('primevue/inputicon')['default']
     InputOtp: typeof import('primevue/inputotp')['default']
     InputText: typeof import('primevue/inputtext')['default']
@@ -27,6 +28,8 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MyAvatar: typeof import('./src/components/MyAvatar.vue')['default']
     MyIcon: typeof import('./src/components/MyIcon.vue')['default']
+    MyImage: typeof import('./src/components/MyImage.vue')['default']
+    MyImageViewer: typeof import('./src/components/MyImageViewer.vue')['default']
     MyPopover: typeof import('./src/components/MyPopover.vue')['default']
     OverlayPanel: typeof import('primevue/overlaypanel')['default']
     Panel: typeof import('primevue/panel')['default']
@@ -64,5 +67,6 @@ declare module 'vue' {
     TextContent: typeof import('./src/modules/content-reel/components/shared/TextContent.vue')['default']
     TextContentItem: typeof import('./src/modules/content-reel/components/shared/TextContentItem.vue')['default']
     UserMention: typeof import('./src/modules/content-reel/components/UserMention.vue')['default']
+    VImage: typeof import('./src/components/VImage.vue')['default']
   }
 }

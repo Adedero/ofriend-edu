@@ -14,6 +14,12 @@ interface Post {
   repostedPost?: string;
 }
 
+interface ExtraFileData {
+  name: string;
+  width: number;
+  height: number;
+}
+
 export default async function createPost(req: Request, res: Response) {
   const user = req.user as ExpressUser;
   const { post } = req.body;
@@ -23,14 +29,26 @@ export default async function createPost(req: Request, res: Response) {
   };
   const parsedPost: Post = JSON.parse(post);
 
-  let media: FileData[] = [];
+  let media: (FileData & { width: number; height: number })[] = [];
 
   if (req.files) {
+    const fileData : ExtraFileData[] = JSON.parse(req.body.file_data) as ExtraFileData[];
+
     const { error, data } = await (useBucket(req.files, { path: 'POSTS' }).upload());
     if (error) {
       res.status(400).json({ message: error });
     }
-    if (data) media = data;
+    if (data) {
+      media = data.map(file => {
+        const file_data = fileData.find(f => f.name === file.originalName);
+        console.log(file_data)
+        return {
+          ...file,
+          width: file_data?.width ?? 0,
+          height: file_data?.height ?? 0
+        }
+      })
+    }
   }
 
   parsedPost.hasMedia = media.length > 0;

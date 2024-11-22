@@ -15,6 +15,7 @@ export interface FileData {
   name: string;
   url: string;
   mimetype: string;
+  originalName: string;
 }
 
 interface Result<T> {
@@ -76,6 +77,7 @@ async function uploadSingleFile(file: UploadedFile, options: UseBucketOptions): 
         url: downloadURL,
         mimetype: file.mimetype,
         name: fileName,
+        originalName: file.name
       },
     };
   } catch (error) {

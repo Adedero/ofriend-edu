@@ -50,8 +50,9 @@ function handlePostEdit () {
         <PostItemIcon />
       </template>
 
-      <div>
+      <div class="grid gap-2">
         <TextContent v-if="post.hasText" :text="post.textContent" />
+        <MediaContent v-if="post.hasMedia" :media="post.media" />
       </div>
     </Panel>
   </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue';
 import safeFileFormats from '@/data/safe-file-formats';
+import loadImage from '../../utils/load-image';
 
 const MAX_MEDIA_AMOUNT = 20;
 
@@ -12,12 +13,12 @@ const emit = defineEmits(['upload', 'cancel']);
 const acceptedFileFormats = safeFileFormats.join(',');
 
 const files = ref<null | File[]>(null);
-const firstFileUrl = ref<null | string>(null);
+const fileUrls = ref<{ url: string; width: number; height: number }[]>([]);
 
 const uploading = ref(false);
 const errorMessage = ref<null | string>(null);
 
-const handleInput = (event: Event) => {
+const handleInput = async (event: Event) => {
   errorMessage.value = null;
   const el = event.target as HTMLInputElement;
   if (!el.files) return;
@@ -39,13 +40,28 @@ const handleInput = (event: Event) => {
   };
 
   files.value = [...el.files];
-  const reader = new FileReader()
+  const urls: { url: string; width: number; height: number}[] = [];
+  try {
+    const results = await Promise.all(files.value.map(loadImage));
+    results.forEach(({ data }) => {
+      urls.push({ url: data.url, width: data.width, height: data.height });
+    });
+
+    emit('upload', results);
+    uploading.value = false;
+    fileUrls.value = urls;
+
+  } catch (error) {
+    errorMessage.value = 'Failed to upload images';
+    uploading.value = false;
+    return;
+  }
+
+  /* const reader = new FileReader()
   reader.readAsDataURL(el.files[0])
   reader.onload = (e) => {
     firstFileUrl.value = e.target?.result as string;
-  }
-  emit('upload', files.value);
-  uploading.value = false;
+  } */
 }
 
 const isImage = (file: File) => file.type.split('/')[0] === 'image';
@@ -53,7 +69,7 @@ const isVideo = (file: File) => file.type.split('/')[0] === 'video';
 
 const reset = () => {
   files.value = []
-  firstFileUrl.value = null
+  fileUrls.value = []
   emit('cancel')
 }
 
@@ -87,13 +103,13 @@ onUnmounted(() => reset());
       <Loader v-if="uploading" type="spinner" />
 
       <div v-else>
-        <div v-if="firstFileUrl" class="relative cursor-context-menu hover:brightness-75 transition-all">
+        <div v-if="fileUrls.length" class="relative cursor-context-menu hover:brightness-75 transition-all">
           <p v-if="files.length > 1"
             class="text-6xl absolute text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             + {{ files.length - 1 }}
           </p>
-          <img v-if="isImage(files[0])" :src="firstFileUrl" alt="file-image" class="max-w-60">
-          <video v-if="isVideo(files[0])" controls :src="firstFileUrl" class="max-w-60"></video>
+          <img v-if="isImage(files[0])" :src="fileUrls[0].url" alt="file-image" class="max-w-60">
+          <video v-if="isVideo(files[0])" controls :src="fileUrls[0].url" class="max-w-60"></video>
         </div>
       </div>
     </div>

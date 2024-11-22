@@ -19,6 +19,15 @@ export interface Post {
   repostedPost?: string;
 }
 
+export interface MediaFile {
+  file: File;
+  data: {
+    url: string;
+    width: number;
+    height: number;
+  }
+}
+
 export interface FullPost {
   _id: string;
   author: { _id: string; name: string; picture: { url: string; name: string }};
@@ -32,7 +41,7 @@ export interface FullPost {
   isViewedByAuthor: boolean;
   isVisibleToViewer: boolean;
   likesCount: number;
-  media?: { url: string; name: string; mimetype: string }[];
+  media?: { url: string; name: string; mimetype: string, width: number; height: number }[];
   mentions: { userId: string; name: string }[];
   repostedPost?: FullPost;
   reposting: boolean;

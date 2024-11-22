@@ -11,7 +11,7 @@ export interface PostModel extends Document {
   hasText: boolean;
   textContent?: string;
   hasMedia: boolean;
-  media?: { url: string; name: string; mimetype: string }[];
+  media?: { url: string; name: string; mimetype: string, width: number; height: number }[];
   likesCount: number;
   commentsCount: number;
   repostsCount: number;
@@ -34,7 +34,7 @@ const postSchema = new Schema<PostModel>({
   hasText: { type: Boolean, required: true, default: false },
   textContent: { type: String },
   hasMedia: { type: Boolean, required: true, default: false },
-  media: { type: [{ url: String, name: String, mimetype: String }], default: [] },
+  media: { type: [{ url: String, name: String, mimetype: String, height: Number, width: Number }], default: [] },
   likesCount: { type: Number, required: true, default: 0 },
   commentsCount: { type: Number, required: true, default: 0 },
   repostsCount: { type: Number, required: true, default: 0 },
