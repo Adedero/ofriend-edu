@@ -22,11 +22,17 @@ const getPostSaveStatus = async () => {
     return;
   };
   loading.value = true;
-  const { data, error } = await useFetch<SaveStatus>(`social/post/save/${post._id}`, { cache: true, router });
+  const { data, error } = await useFetch<SaveStatus>(
+    `social/post/save/${post._id}`, { cache: true, router }
+  );
   loading.value = false;
   err.value = error.value;
 
   if (data.value) saveStatus.value = data.value;
+};
+
+const handleToggleSave = (saved: boolean) => {
+  if (saveStatus.value) saveStatus.value.saved = saved;
 };
 
 onMounted(async () =>{
@@ -40,9 +46,9 @@ onMounted(async () =>{
     <FetchError v-else-if="err" :error="err" @retry="getPostSaveStatus" :show-icon="false" />
     <div v-else-if="saveStatus">
       <PostItemOptionCopyLink />
-      <PostItemOptionToggleFollow />
+      <PostItemOptionSavePost :saved="saveStatus.saved" @toggle-save="handleToggleSave" />
       <div v-if="!post.isViewedByAuthor">
-
+        <PostItemOptionToggleFollow />
       </div>
     </div>
   </div>

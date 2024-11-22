@@ -5,6 +5,7 @@ import searchAndGetUsers from "./services/user/search-and-get-users";
 import getPostById from "./services/post/get-post-by-id";
 import getPostSaveStatus from "./services/post/get-post-save-status";
 import toggleFollow from "./services/follow/toggle-follow";
+import togglePostSave from "./services/post/toggle-post-save";
 
 
 const SocialController = {
@@ -17,6 +18,7 @@ const SocialController = {
   createPost,
 
   getPostSaveStatus,
+  togglePostSave,
 
   //Follows
   getFollows,

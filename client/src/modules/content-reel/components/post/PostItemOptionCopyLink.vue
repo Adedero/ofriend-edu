@@ -25,5 +25,5 @@ onUnmounted(() => {
 
 <template>
   <Button @click="copy" :label="copied ? 'Copied' : 'Copy link'" :icon="copied ? 'pi pi-check' : 'pi pi-link'"
-  text severity="secondary" class="text-left" />
+  text severity="secondary" fluid  class="flex justify-normal" />
 </template>

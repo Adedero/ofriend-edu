@@ -28,16 +28,15 @@ const toggleUserFollow = async () => {
   if (data.value) following.value = data.value.following;
 }
 
-const firstName = computed(() => post?.author.name.split(' ')[0] ?? '')
+const firstName = computed(() => post?.author.name.split(' ')[0] ?? '');
 </script>
 
 <template>
   <div v-if="post">
     <Button @click="toggleUserFollow"
     :label="following ? `Unfollow ${firstName}` : `Follow ${firstName}`"
-    :icon="following ? 'pi pi-user-minus' : 'pi pi-user-plus'" text severity="secondary" class="text-left"
-    :class="{ 'text-accent': following }" :loading />
-
+    :icon="following ? 'pi pi-user-minus' : 'pi pi-user-plus'" text severity="secondary"  class="flex justify-normal"
+    :class="{ 'text-turquoise': following }" :loading />
     <SimpleError v-if="err" :message="err.message"  />
   </div>
 </template>

@@ -24,6 +24,7 @@ router.route('/post/:post_id')
 
 router.route('/post/save/:post_id')
   .get(SocialController.getPostSaveStatus)
+  .post(SocialController.togglePostSave)
 
 //Follow
 router.route('/follow/:user_id?')

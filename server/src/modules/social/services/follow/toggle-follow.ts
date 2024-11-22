@@ -14,6 +14,39 @@ export default async function toggleFollow(req: Request, res: Response) {
   };
   const userId = validatedId.value;
 
+  if (process.env.NODE_ENV === 'production') {
+    const following = await toggleFollowInProductionEnv(userId, followerId);
+    res.status(200).json({ following });
+    return;
+  }
+  const following = await toggleFollowInDevEnv(userId, followerId);
+  res.status(200).json({ following });
+  return;
+}
+
+
+async function toggleFollowInDevEnv(userId: string, followerId: string) {
+  const follow = await db.Follow.findOne({ user: userId, follower: followerId }).lean();
+
+  if (follow) {
+    await Promise.all([
+      db.User.updateOne({ _id: userId }, { $inc: { followers: -1 } }),
+      db.User.updateOne({ _id: followerId }, { $inc: { following: -1 } }),
+      db.Follow.deleteOne({ user: userId })
+    ]) ;
+    return false;
+  }
+
+  await Promise.all([
+    db.User.updateOne({ _id: userId }, { $inc: { followers: 1 } }),
+    db.User.updateOne({ _id: followerId }, { $inc: { following: 1 } }),
+    db.Follow.create({ user: userId, follower: followerId })
+  ]);
+  return true;
+}
+
+
+async function toggleFollowInProductionEnv(userId: string, followerId: string) {
   const follow = await db.Follow.findOne({ user: userId, follower: followerId }).lean();
 
   const session = await mongoose.startSession();
@@ -26,8 +59,7 @@ export default async function toggleFollow(req: Request, res: Response) {
     
     await session.commitTransaction();
     session.endSession();
-    res.status(500).json({ following: false });
-    return;
+    return false;
   }
 
   await db.User.updateOne({ _id: userId }, { $inc: { followers: 1 } }, { session });
@@ -36,39 +68,5 @@ export default async function toggleFollow(req: Request, res: Response) {
 
   await session.commitTransaction();
   session.endSession();
-  res.status(500).json({ following: true });
-  return;
-
-
-  /* 
-  const { authorId } = req.params;r
-    const userId = req.user.id;
-
-    const [follow, subscription] = await Promise.all([
-      Follow.findOne({ user: authorId, follower: userId }).lean(),
-      Subscription.findOne({ user: authorId, subscriber: userId }).lean()
-    ]);
-
-    if (follow) {
-      await Promise.all([
-        User.updateOne({ _id: authorId }, { $inc: { followers: -1, subscribers: -1 } }),
-        User.updateOne({ _id: userId }, { $inc: { following: -1 } }),
-        Follow.deleteOne({ _id: follow._id }),
-        subscription && Subscription.deleteOne({ _id: subscription._id })
-      ])
-      return res.status(200).json({
-        success: true,
-        isFollowing: false
-      });
-    }
-
-    await Promise.all([
-      User.updateOne({ _id: authorId }, { $inc: { followers: 1 } }),
-      User.updateOne({ _id: userId }, { $inc: { following: 1 } }),
-      Follow.create({ user: authorId, follower: userId })
-    ])
-    return res.status(200).json({
-      success: true,
-      isFollowing: true
-    }); */
+  return true;
 }

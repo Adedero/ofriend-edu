@@ -39,6 +39,7 @@ declare module 'vue' {
     PostItemIcons: typeof import('./src/modules/content-reel/components/post/PostItemIcons.vue')['default']
     PostItemOptionCopyLink: typeof import('./src/modules/content-reel/components/post/PostItemOptionCopyLink.vue')['default']
     PostItemOptions: typeof import('./src/modules/content-reel/components/post/PostItemOptions.vue')['default']
+    PostItemOptionSavePost: typeof import('./src/modules/content-reel/components/post/PostItemOptionSavePost.vue')['default']
     PostItemOptionToggleFollow: typeof import('./src/modules/content-reel/components/post/PostItemOptionToggleFollow.vue')['default']
     PostItemSkeleton: typeof import('./src/modules/content-reel/components/skeletons/PostItemSkeleton.vue')['default']
     ReelNavbar: typeof import('./src/modules/content-reel/components/shared/ReelNavbar.vue')['default']
