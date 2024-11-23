@@ -7,9 +7,10 @@ interface Props {
   aspectRatio?: number | string;
   width?: string | number;
   height?: string | number;
+  preview?: boolean;
 }
 
-const { width, height, aspectRatio, alt, src } = defineProps<Props>();
+const { width, height, aspectRatio, alt, src, preview = true } = defineProps<Props>();
 
 const image = ref<HTMLImageElement | null>(null);
 const observer = ref<IntersectionObserver | null>(null);
@@ -128,6 +129,7 @@ onUnmounted(() => {
     </div>
 
     <img ref="image" :src="src" :alt="alt" :class="{ loaded: !loading }" />
+    <Image v-if="!loading && !error" :src :alt :preview />
   </div>
 </template>
 
@@ -141,7 +143,7 @@ onUnmounted(() => {
 }
 
 .image-container.loaded {
-  background-color: red;
+  background-color: transparent;
 }
 
 img {
@@ -152,7 +154,7 @@ img {
 }
 
 img.loaded {
-  display: block;
+  display: none;
 }
 
 .loading-state, .error-state {

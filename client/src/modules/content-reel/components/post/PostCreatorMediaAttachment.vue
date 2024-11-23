@@ -46,13 +46,12 @@ const handleInput = async (event: Event) => {
     results.forEach(({ data }) => {
       urls.push({ url: data.url, width: data.width, height: data.height });
     });
-
     emit('upload', results);
     uploading.value = false;
     fileUrls.value = urls;
 
   } catch (error) {
-    errorMessage.value = 'Failed to upload images';
+    errorMessage.value = 'Failed to upload images. Try again.';
     uploading.value = false;
     return;
   }

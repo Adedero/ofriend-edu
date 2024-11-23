@@ -24,4 +24,5 @@ app.directive('ripple', Ripple)
 app.use(ConfirmationService)
 app.use(ToastService)
 
+
 app.mount('#app')
