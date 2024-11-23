@@ -16,12 +16,15 @@ const toggle = (event: Event) => {
 
 <template>
   <div v-if="post">
-    <button class="p-1.5 hover:bg-slate-200 rounded-md" @click="toggle">
-      <span class="pi pi-ellipsis-v"></span>
-    </button>
-
-    <Popover ref="popover">
-      <PostItemOptions />
-    </Popover>
+    <MyPopover>
+      <button class="mr-5 p-1.5 hover:bg-slate-200 rounded-md">
+        <span class="pi pi-ellipsis-v"></span>
+      </button>
+      <template #content>
+        <div class="max-w-56">
+          <PostItemOptions />
+        </div>
+      </template>
+    </MyPopover>
   </div>
 </template>

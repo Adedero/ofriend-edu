@@ -15,7 +15,7 @@ const contentReelRoutes = [
     component: () => import('./views/SavedPostsView.vue')
   },
   {
-    path: 'profile',
+    path: 'profile/:profile_id?',
     name: 'user-social-profile',
     component: () => import('./views/UserSocialProfileView.vue')
   },

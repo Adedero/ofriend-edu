@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { db } from './../../../../database/db-models';
 import { ExpressUser } from '../../../../types/express-user.type';
+import { Types } from 'mongoose';
 
 const LIMIT = 10;
 export default async function searchAndGetUsers (req: Request, res: Response) {
@@ -8,12 +9,12 @@ export default async function searchAndGetUsers (req: Request, res: Response) {
   const skip = parseInt(req.query.skip as string) || 0;
   const limit = parseInt(req.query.limit as string) || LIMIT;
 
-  const user = req.user as ExpressUser;
+  const userId = new Types.ObjectId((req.user as ExpressUser).id as string);
   
   const users = await db.User.aggregate([
     {
       $match: {
-        _id: { $ne: user.id },
+        _id: { $ne: userId },
         name: { $regex: value, $options: 'i' }
       }
     },
@@ -26,8 +27,8 @@ export default async function searchAndGetUsers (req: Request, res: Response) {
             $match: {
               $expr: {
                 $or: [
-                  { $and: [{ $eq: ['$blocker', user.id] }, { $eq: ['$blockedUser', '$$userId'] }] },
-                  { $and: [{ $eq: ['$blocker', '$$userId'] }, { $eq: ['$blockedUser', user.id] }] }
+                  { $and: [{ $eq: ['$blocker', userId] }, { $eq: ['$blockedUser', '$$userId'] }] },
+                  { $and: [{ $eq: ['$blocker', '$$userId'] }, { $eq: ['$blockedUser', userId] }] }
                 ]
               }
             }

@@ -67,26 +67,22 @@ export default async function getPostById (req: Request, res: Response) {
       }
     },
 
-  
-    // Lookup the likes collection to see if the user has liked the post
+     // Lookup the likes collection to see if the user has liked the post
     {
       $lookup: {
-        from: 'likes',
-        let: { postId: '$_id', userId: userId },
+        from: 'likes', // The 'Like' collection
+        localField: '_id',
+        foreignField: 'post',
+        as: 'userLikes',
         pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ['$targetId', '$$postId'] },  // Match the targetId to the post ID
-                  { $eq: ['$targetType', 'Post'] },    // Ensure the targetType is 'Post'
-                  { $eq: ['$liker', '$$userId'] }      // Ensure the liker is the current user
-                ]
-              }
-            }
+          { $match: {
+            $and: [
+                { liker: userId },  // Ensure the 'liker' matches the provided userId
+                { post: { $eq: '$_id' } }  // Ensure the 'post' matches the current post (_id)
+              ]
+            } 
           }
-        ],
-        as: 'userLikes'
+        ]
       }
     },
   

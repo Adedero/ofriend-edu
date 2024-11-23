@@ -6,7 +6,7 @@ import useFetch from "@/composables/use-fetch";
 import useUserStore from '@/stores/user.store';
 import { handleMention, parseMentions } from '../../utils/mentions';
 //import socket from '@/config/socket.config';
-import type { MentionedUser, Post } from '../../types';
+import type { MediaFile, MentionedUser, Post } from '../../types';
 import type { UseFetchError } from "@/composables/use-fetch/functions/fetch-error-creator";
 import fetchErrorHandler from '@/composables/use-fetch/functions/fetch-error-handler';
 
@@ -16,8 +16,8 @@ const userStore = useUserStore();
 
 const status = ref(visibilityOptions[0]);
 
-const files = ref<null | File[]>(null);
-const setFiles = (data: File[]) => (files.value = data);
+const files = ref<null | MediaFile[]>(null);
+const setFiles = (data: MediaFile[]) => (files.value = data);
 
 const post = ref<Post>({
   textContent: '',
@@ -49,7 +49,14 @@ const createPost = async () => {
   form.append('post', JSON.stringify(post.value));
 
   if (files.value) {
-    files.value.forEach((file, index) => form.append(`file-${index + 1}`, file));
+    files.value.forEach((file, index) => form.append(`file-${index + 1}`, file.file));
+    form.append('file_data', JSON.stringify(files.value.map(file => {
+      return {
+        name: file.file.name,
+        width: file.data.width,
+        height: file.data.height
+      }
+    })));
   };
 
   err.value = null;

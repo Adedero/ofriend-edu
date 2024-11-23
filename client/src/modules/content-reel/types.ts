@@ -14,9 +14,18 @@ export interface Post {
   status: string;
   hasText: boolean;
   hasMedia: boolean;
-  mentions?: MentionedUser[];
+  mentions?: { userId: string; name: string}[];
   reposting?: boolean;
   repostedPost?: string;
+}
+
+export interface MediaFile {
+  file: File;
+  data: {
+    url: string;
+    width: number;
+    height: number;
+  }
 }
 
 export interface FullPost {
@@ -32,8 +41,8 @@ export interface FullPost {
   isViewedByAuthor: boolean;
   isVisibleToViewer: boolean;
   likesCount: number;
-  media?: { url: string; name: string; mimetype: string }[];
-  mentions: { id: string; name: string }[];
+  media?: { _id: string; url: string; name: string; mimetype: string, width: number; height: number }[];
+  mentions: { userId: string; name: string }[];
   repostedPost?: FullPost;
   reposting: boolean;
   repostsCount: number;

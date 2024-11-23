@@ -15,6 +15,7 @@ export interface FileData {
   name: string;
   url: string;
   mimetype: string;
+  originalName: string;
 }
 
 interface Result<T> {
@@ -22,8 +23,12 @@ interface Result<T> {
   data: T | null;
 }
 
+interface MediaFile {
+  name: string
+}
+
 const useBucket = (
-  filesOrFileArray: UploadedFile[] | FileArray,
+  filesOrFileArray: FileArray | MediaFile[],
   options: UseBucketOptions
 ) => {
   const defaultOptions: UseBucketOptions = {
@@ -32,14 +37,14 @@ const useBucket = (
     ...options
   };
 
-  let fileArray : UploadedFile[] = filesOrFileArray as UploadedFile[];
+  let fileArray : UploadedFile[] | MediaFile[] = filesOrFileArray as MediaFile[];
   if (!Array.isArray(filesOrFileArray)) {
     fileArray = Object.keys(filesOrFileArray).map(key => filesOrFileArray[key]).flat();
   }
 
   return {
-    upload: async () => await uploadMultipleFiles(fileArray, defaultOptions),
-    delete: async () => await deleteMultipleFiles(fileArray, defaultOptions)
+    upload: async () => await uploadMultipleFiles(fileArray as UploadedFile[], defaultOptions),
+    delete: async () => await deleteMultipleFiles(fileArray as MediaFile[], defaultOptions)
   };
 };
 
@@ -72,6 +77,7 @@ async function uploadSingleFile(file: UploadedFile, options: UseBucketOptions): 
         url: downloadURL,
         mimetype: file.mimetype,
         name: fileName,
+        originalName: file.name
       },
     };
   } catch (error) {
@@ -113,7 +119,7 @@ async function cleanupTempFile(tempFilePath: string) {
   }
 }
 
-async function deleteSingleFile(file: UploadedFile, options: UseBucketOptions): Promise<Result<null>> {
+async function deleteSingleFile(file: MediaFile, options: UseBucketOptions): Promise<Result<null>> {
   const { path, timeout } = options;
   let timer: NodeJS.Timeout | null = null;
 
@@ -136,7 +142,7 @@ async function deleteSingleFile(file: UploadedFile, options: UseBucketOptions): 
   }
 }
 
-async function deleteMultipleFiles(files: UploadedFile[], options: UseBucketOptions): Promise<Result<null>> {
+async function deleteMultipleFiles(files: MediaFile[], options: UseBucketOptions): Promise<Result<null>> {
   try {
     if (!files.length) {
       throw new Error('No files provided');

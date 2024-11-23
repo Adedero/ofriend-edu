@@ -39,7 +39,7 @@ export default async function getPosts (req: Request, res: Response) {
       $lookup: {
         from: 'likes', // The 'Like' collection
         localField: '_id',
-        foreignField: 'targetId',
+        foreignField: 'post',
         as: 'likes',
         pipeline: [
           { $match: { liker: userId } }

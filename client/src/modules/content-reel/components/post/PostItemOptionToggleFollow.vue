@@ -24,7 +24,7 @@ const toggleUserFollow = async () => {
   )
   loading.value = false;
   err.value = error.value;
-
+  if (err.value || !data.value) return;
   if (data.value) following.value = data.value.following;
 };
 

@@ -6,6 +6,10 @@ import getPostById from "./services/post/get-post-by-id";
 import getPostSaveStatus from "./services/post/get-post-save-status";
 import toggleFollow from "./services/follow/toggle-follow";
 import togglePostSave from "./services/post/toggle-post-save";
+import getBlocks from "./services/block/get-blocks";
+import toggleBlock from "./services/block/toggle-block";
+import deleteBlock from "./services/block/delete-block";
+import deletePost from "./services/post/delete-post";
 
 
 const SocialController = {
@@ -16,13 +20,19 @@ const SocialController = {
   getPosts,
   getPostById,
   createPost,
+  deletePost,
 
   getPostSaveStatus,
   togglePostSave,
 
-  //Follows
+  //Follow
   getFollows,
-  toggleFollow
+  toggleFollow,
+
+  //Block
+  getBlocks,
+  toggleBlock,
+  deleteBlock
 };
 
 export default SocialController;

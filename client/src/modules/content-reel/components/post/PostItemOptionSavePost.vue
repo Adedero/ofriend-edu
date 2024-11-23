@@ -26,9 +26,7 @@ const togglePostSave = async () => {
   )
   loading.value = false;
   err.value = error.value;
-
-  if (!data.value) return;
-
+  if (err.value || !data.value) return;
   emit('toggle-save', data.value.saved);
 }
 </script>

@@ -2,8 +2,31 @@ import { type Request, Response} from 'express';
 import { ExpressUser } from '../../../../types/express-user.type';
 import { db } from '../../../../database/db-models';
 import { validateUserId } from '../../utils/validate-ids';
-import mongoose from 'mongoose';
+//import mongoose from 'mongoose';
+
 export default async function toggleFollow(req: Request, res: Response) {
+  const followerId = (req.user as ExpressUser).id;
+
+  const { user_id } = req.params;
+  const validatedId = validateUserId(user_id);
+  if (!validatedId.valid) {
+    res.status(400).json({ message: validatedId.message });
+    return;
+  };
+  const userId = validatedId.value;
+
+  const follow = await db.Follow.findOne({ user: userId, follower: followerId });
+
+  if (follow) {
+    await follow.deleteOne();
+    res.status(200).json({ following: false });
+    return;
+  }
+  await db.Follow.create({ user: userId, follower: followerId });
+  res.status(200).json({ following: true });
+}
+
+/* export default async function toggleFollow(req: Request, res: Response) {
   const followerId = (req.user as ExpressUser).id;
 
   const { user_id } = req.params;
@@ -33,7 +56,7 @@ async function toggleFollowInDevEnv(userId: string, followerId: string) {
       db.User.updateOne({ _id: userId }, { $inc: { followers: -1 } }),
       db.User.updateOne({ _id: followerId }, { $inc: { following: -1 } }),
       db.Follow.deleteOne({ user: userId })
-    ]) ;
+    ]);
     return false;
   }
 
@@ -69,4 +92,4 @@ async function toggleFollowInProductionEnv(userId: string, followerId: string) {
   await session.commitTransaction();
   session.endSession();
   return true;
-}
+} */
