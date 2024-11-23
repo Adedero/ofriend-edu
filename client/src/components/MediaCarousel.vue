@@ -9,15 +9,17 @@ const { media } = defineProps<Props>();
 
 <template>
   <div v-if="media && media.length">
-    <div class="carousel-container">
-      <!-- <div v-for="item in media" :key="item._id" class="media-container">
-        //Media
-      </div> -->
-      <div class="media-container bg-red-500"></div>
-      <div class="media-container bg-blue-500"></div>
-      <div class="media-container bg-yellow-500"></div>
+    <div class="carousel-container border bg-slate-600" :class="{ three: media.length === 3 }">
+      <div v-for="item in media.slice(0, 4)" :key="item._id" class="media-container">
+        <VImage
+          v-if="item.mimetype.includes('image')"
+          :src="item.url"
+          :alt="item.name"
+          :preview="false"
+          :rounded="false"
+          />
+      </div>
     </div>
-    Media
   </div>
 </template>
 
@@ -25,15 +27,18 @@ const { media } = defineProps<Props>();
 .carousel-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  border-radius: 6px;
-  height: 10rem;
+  border-radius: 12px;
+  height: 15rem;
   overflow: hidden;
-
-  .media-container:nth-of-type(1) {
-    background-color: purple;
-  }
 }
-.carousel-container.three {
 
+.media-container {
+  overflow: hidden;
+}
+
+.carousel-container.three {
+  .media-container:nth-of-type(1) {
+    grid-row: span 2 / span 2;
+  }
 }
 </style>

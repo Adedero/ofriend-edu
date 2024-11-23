@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { VideoPlayer } from '@videojs-player/vue'
-import 'video.js/dist/video-js.css'
+import { VideoPlayer } from '@videojs-player/vue';
+import 'video.js/dist/video-js.css';
 import type { FullPost } from '../../types';
 
 interface Props {
@@ -23,7 +23,7 @@ onMounted(() => {
         v-if="media[0].mimetype.includes('image')"
         :aspect-ratio="`${media[0].width ?? '16'}/${media[0].height ?? '9'}`"
         :src="media[0].url"
-        alt="Image"
+        :alt="media[0].name"
       />
       <video-player
        v-if="media[0].mimetype.includes('video')"

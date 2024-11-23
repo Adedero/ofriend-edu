@@ -40,7 +40,6 @@ declare module 'vue' {
     PostItem: typeof import('./src/modules/content-reel/components/post/PostItem.vue')['default']
     PostItemHeader: typeof import('./src/modules/content-reel/components/post/PostItemHeader.vue')['default']
     PostItemIcon: typeof import('./src/modules/content-reel/components/post/PostItemIcon.vue')['default']
-    PostItemOptionBlockUser: typeof import('./src/modules/content-reel/components/post/PostItemOptionBlockUser.vue')['default']
     PostItemIcons: typeof import('./src/modules/content-reel/components/post/PostItemIcons.vue')['default']
     PostItemOptionBlockUser: typeof import('./src/modules/content-reel/components/post/PostItemOptionBlockUser.vue')['default']
     PostItemOptionCopyLink: typeof import('./src/modules/content-reel/components/post/PostItemOptionCopyLink.vue')['default']

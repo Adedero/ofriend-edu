@@ -46,7 +46,6 @@ const handleInput = async (event: Event) => {
     results.forEach(({ data }) => {
       urls.push({ url: data.url, width: data.width, height: data.height });
     });
-    console.log(results)
     emit('upload', results);
     uploading.value = false;
     fileUrls.value = urls;

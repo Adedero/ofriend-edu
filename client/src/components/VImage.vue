@@ -8,9 +8,11 @@ interface Props {
   width?: string | number;
   height?: string | number;
   preview?: boolean;
+  rounded?: boolean;
+  objectCover?: boolean;
 }
 
-const { width, height, aspectRatio, alt, src, preview = true } = defineProps<Props>();
+const { width, height, aspectRatio, alt, src, preview = true, rounded = true } = defineProps<Props>();
 
 const image = ref<HTMLImageElement | null>(null);
 const observer = ref<IntersectionObserver | null>(null);
@@ -108,7 +110,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="image-container" :class="{ loaded: !loading }" :style="containerStyle">
+  <div class="image-container" :class="{ loaded: !loading && !error, 'rounded-lg': rounded }" :style="containerStyle">
     <div v-if="loading" class="loading-state">
       <Loader type="spinner" />
     </div>
@@ -128,8 +130,8 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <img ref="image" :src="src" :alt="alt" :class="{ loaded: !loading }" />
-    <Image v-if="!loading && !error" :src :alt :preview />
+    <img ref="image" :src="src" :alt="alt" :class="{ loaded: !loading && preview }" />
+    <Image v-if="!loading && !error && preview" :src :alt :preview />
   </div>
 </template>
 
@@ -137,7 +139,6 @@ onUnmounted(() => {
 .image-container {
   position: relative;
   overflow: hidden;
-  border-radius: 6px;
   background-color: rgb(71 85 105);
   transition: all 500ms;
 }
@@ -150,7 +151,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: none;
+  display: block;
 }
 
 img.loaded {
