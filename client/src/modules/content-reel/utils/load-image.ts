@@ -19,7 +19,7 @@ const loadMedia = (file: File): Promise<{ file: File; data: { url: string, width
       if (file.type.includes('video')) {
         el = document.createElement('video');
         el.onloadeddata = () => {
-          resolve({ file, data: { url: fileUrl, width: (el as HTMLVideoElement).width, height: (el as HTMLVideoElement).height } });
+          resolve({ file, data: { url: fileUrl, width: (el as HTMLVideoElement).videoWidth, height: (el as HTMLVideoElement).videoHeight } });
         };
       }
 

@@ -23,6 +23,7 @@ declare module 'vue' {
     InputText: typeof import('primevue/inputtext')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
     LoadingBar: typeof import('./src/components/LoadingBar.vue')['default']
+    MediaCarousel: typeof import('./src/components/MediaCarousel.vue')['default']
     MediaContent: typeof import('./src/modules/content-reel/components/shared/MediaContent.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']

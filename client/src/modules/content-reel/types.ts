@@ -41,7 +41,7 @@ export interface FullPost {
   isViewedByAuthor: boolean;
   isVisibleToViewer: boolean;
   likesCount: number;
-  media?: { url: string; name: string; mimetype: string, width: number; height: number }[];
+  media?: { _id: string; url: string; name: string; mimetype: string, width: number; height: number }[];
   mentions: { userId: string; name: string }[];
   repostedPost?: FullPost;
   reposting: boolean;
