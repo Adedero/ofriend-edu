@@ -44,10 +44,13 @@ onMounted(async () =>{
   <div v-if="post">
     <Loader v-if="loading" />
     <FetchError v-else-if="err" :error="err" @retry="getPostSaveStatus" :show-icon="false" />
+
     <div v-else-if="saveStatus">
       <PostItemOptionCopyLink />
-      <PostItemOptionSavePost :saved="saveStatus.saved" @toggle-save="handleToggleSave" />
+
+      <PostItemOptionBlockUser />
       <div v-if="!post.isViewedByAuthor">
+        <PostItemOptionSavePost :saved="saveStatus.saved" @toggle-save="handleToggleSave" />
         <PostItemOptionToggleFollow />
       </div>
     </div>
