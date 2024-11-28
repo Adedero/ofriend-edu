@@ -27,6 +27,12 @@ router.route('/post/save/:post_id')
   .get(SocialController.getPostSaveStatus)
   .post(SocialController.togglePostSave)
 
+
+//Post
+router.route('/like')
+  .get(SocialController.getLikers)
+  .post(SocialController.toggleLike)
+
 //Follow
 router.route('/follow/:user_id?')
   .get(SocialController.getFollows) //get followers

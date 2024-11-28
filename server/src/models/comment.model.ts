@@ -9,7 +9,7 @@ export interface CommentModel extends Document {
   hasText: boolean;
   textContent?: string;
   hasMedia: boolean;
-  media?: { url: string; name: string; mimetype: string }[];
+  media?: { url: string; name: string; mimetype: string, height: number, width: number };
   likesCount: number;
   repliesCount: number;
   edited: boolean;
@@ -28,7 +28,7 @@ const commentSchema = new Schema<CommentModel>({
   hasText: { type: Boolean, required: true, default: false },
   textContent: { type: String },
   hasMedia: { type: Boolean, required: true, default: false },
-  media: { type: [{ url: String, name: String, mimetype: String }], default: [] },
+  media: { type: { url: String, name: String,mimetype: String, height: Number, width: Number } },
   likesCount: { type: Number, required: true, default: 0 },
   repliesCount: { type: Number, required: true, default: 0 },
   edited: { type: Boolean, required: true, default: false },

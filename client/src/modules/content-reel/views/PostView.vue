@@ -32,7 +32,9 @@ onMounted(async () => {
     <PostItemSkeleton v-if="loading" />
     <FetchError v-else-if="err" :error="err" @retry="getPost($route.params.post_id as string)" />
     <div v-else-if="post">
-      <PostItem :post />
+      <PostItem
+        :post
+        @like="(liked : boolean) => post && (post.isLikedByViewer = liked)" />
     </div>
   </main>
 </template>

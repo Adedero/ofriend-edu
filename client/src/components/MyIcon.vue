@@ -66,5 +66,23 @@ const {
     <SwitchCaseItem value="friends">
       <svg viewBox="0 0 16 16" :width :height xmlns="http://www.w3.org/2000/svg" :fill class="bi bi-people-fill"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path> <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"></path> <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"></path> </g></svg>
     </SwitchCaseItem>
+
+    <SwitchCaseItem value="share">
+      <svg fill="#000000" :width :height viewBox="0 0 24 24" id="repost-round" data-name="Flat Line"
+        xmlns="http://www.w3.org/2000/svg" class="icon flat-line mr-1">
+        <path id="primary" d="M6,14V9A6,6,0,0,1,16.89,5.54"
+          style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9;">
+        </path>
+        <path id="primary-2" data-name="primary" d="M18,10v5A6,6,0,0,1,7.11,18.46"
+          style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9;">
+        </path>
+        <polyline id="primary-3" data-name="primary" points="8 12 6 14 4 12"
+          style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9;">
+        </polyline>
+        <polyline id="primary-4" data-name="primary" points="16 12 18 10 20 12"
+          style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9;">
+        </polyline>
+      </svg>
+    </SwitchCaseItem>
   </SwitchCase>
 </template>

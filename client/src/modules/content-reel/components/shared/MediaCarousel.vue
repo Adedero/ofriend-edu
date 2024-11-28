@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import type { FullPost } from '@/modules/content-reel/types';
+import Loader from '@/components/Loader.vue'
+
+const MediaCarouselOverlay = defineAsyncComponent({
+  loader: () => import('./MediaCarouselOverlay.vue'),
+  loadingComponent: Loader
+});
 
 interface Props {
   media: FullPost['media']
@@ -21,12 +27,13 @@ const responsiveOptions = ref([
         numVisible: 1
     }
 ]);
+const visible = ref(false);
 </script>
 
 <template>
   <div v-if="media && media.length">
     <div>
-      <Galleria :value="media" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="max-width: 640px"
+      <!-- <Galleria :value="media" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="max-width: 640px"
         :showItemNavigators="true" :showThumbnails="false" :showItemNavigatorsOnHover="true" :showIndicators="true">
         <template #item="slotProps">
           <VImage
@@ -36,24 +43,40 @@ const responsiveOptions = ref([
           :preview="false"
           :rounded="false"
           />
-          <!-- <img :src="slotProps.item.src" :alt="slotProps.item.name" style="width: 100%; display: block;" /> -->
         </template>
         <template #thumbnail="slotProps">
           <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="display: block;" />
         </template>
-    </Galleria>
+      </Galleria> -->
     </div>
-   <!--  <div class="carousel-container border bg-slate-600" :class="{ three: media.length === 3 }">
+    <div @click="visible = true" class="carousel-container border bg-slate-600" :class="{ three: media.length === 3 }">
       <div v-for="item in media.slice(0, 4)" :key="item._id" class="media-container">
         <VImage
           v-if="item.mimetype.includes('image')"
           :src="item.url"
-          :alt="item.name"
           :preview="false"
           :rounded="false"
           />
+        <video-player
+        v-if="item.mimetype.includes('video')"
+          :src="item.url"
+          :aspect-ratio="`${item.width ?? ''}:${item.height ?? ''}`"
+          fluid
+          controls
+          :loop="false"
+          :volume="0.6"
+        />
       </div>
-    </div> -->
+    </div>
+
+     <div
+      class="overlay z-50 fixed inset-0 m-auto  bg-black/20 backdrop-blur overflow-hidden
+      transition-all duration-300 grid place-content-center" :class="[visible ? 'h-dvh w-dvw' : 'h-0 w-0']">
+      <div v-if="visible">
+        <MediaCarouselOverlay @click-outside="visible = false" :media />
+      </div>
+    </div>
+
   </div>
 </template>
 

@@ -4,7 +4,7 @@
       <ReelNavbar />
     </nav>
 
-    <div class="flex-grow min-w-0 px-2 md:px-0">
+    <div class="flex-grow min-w-0 px-2 md:px-0 h-full overflow-y-auto">
       <RouterView />
     </div>
 

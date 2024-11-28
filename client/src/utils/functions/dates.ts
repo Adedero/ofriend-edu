@@ -8,19 +8,6 @@ export function formatNumber(num) {
     }
 }
 
-export function formatDate(value) {
-  const date = new Date(value);
-  const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-  ];
-
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-
-  return `${day} ${month}, ${year}`;
-}
 
 export function formatChatDate(date) {
   const now = new Date();

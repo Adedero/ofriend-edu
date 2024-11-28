@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import type { FullPost } from '../../types';
 import useDate from '@/composables/use-date';
 
@@ -14,7 +14,11 @@ const statuses = [
 
 <template>
   <div v-if="post">
-    <div class="cursor-pointer flex items-center gap-2">
+    <RouterLink :to="{
+      name: 'user-social-profile',
+      params: { profile_id: post.isViewedByAuthor ? '' : post.author._id }
+      }"
+      class="cursor-pointer flex items-center gap-2">
       <MyAvatar :user="post.author" shape="circle" size="large" avatar-class="w-12 h-12" />
 
       <div>
@@ -37,6 +41,6 @@ const statuses = [
           <small v-show="post.edited" class="text-slate-500">edited</small>
         </p>
       </div>
-    </div>
+    </RouterLink>
   </div>
 </template>

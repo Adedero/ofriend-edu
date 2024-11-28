@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent, inject, ref } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import type { FullPost } from '../../types';
 
 const PostItemOptions = defineAsyncComponent({
@@ -7,11 +7,6 @@ const PostItemOptions = defineAsyncComponent({
 });
 
 const post = inject<FullPost>('post');
-
-const popover = ref();
-const toggle = (event: Event) => {
-  popover.value.toggle(event);
-};
 </script>
 
 <template>

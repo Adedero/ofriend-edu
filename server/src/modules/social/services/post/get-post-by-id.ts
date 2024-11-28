@@ -143,6 +143,8 @@ export default async function getPostById (req: Request, res: Response) {
 
   const post = await query;
 
+  console.log(post);
+
   if (!post || post.length === 0) {
     res.status(404).json({ message: 'Post not found. This post may have been deleted.' });
     return;

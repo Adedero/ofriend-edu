@@ -10,6 +10,8 @@ import getBlocks from "./services/block/get-blocks";
 import toggleBlock from "./services/block/toggle-block";
 import deleteBlock from "./services/block/delete-block";
 import deletePost from "./services/post/delete-post";
+import getLikers from "./services/like/get-likers";
+import toggleLike from "./services/like/toggle-like";
 
 
 const SocialController = {
@@ -24,6 +26,10 @@ const SocialController = {
 
   getPostSaveStatus,
   togglePostSave,
+
+  //Like
+  getLikers,
+  toggleLike,
 
   //Follow
   getFollows,
