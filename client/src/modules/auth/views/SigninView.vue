@@ -16,6 +16,7 @@ const loading = ref(false);
 const err = ref<UseFetchError | null>(null);
 
 const user = ref({ email: '', password: '' });
+const authenticatedUser = ref<Partial<User> | null>(null);
 const validator = ref<{ email?: string, password?: string }>({});
 const isSubmissionValid = computed(() => user.value.email && user.value.password);
 
@@ -45,14 +46,14 @@ const signin = async () => {
 
   const { redirect } = route.query;
 
-  const authenticatedUser = data.value.user as Partial<User>;
+  authenticatedUser.value = data.value.user as Partial<User>;
 
-  userStore.setUser(authenticatedUser.id, authenticatedUser);
+  userStore.setUser(authenticatedUser.value.id, authenticatedUser.value);
 
-  if (!authenticatedUser.verified) {
+  if (!authenticatedUser.value.verified) {
     router.push({
       name: 'otp-verification',
-      query: { user_id: authenticatedUser.id, redirect },
+      query: { user_id: authenticatedUser.value.id, redirect },
     });
     return;
   }
@@ -61,7 +62,7 @@ const signin = async () => {
     router.push(redirect as string);
     return;
   }
-  router.push({ name: 'dashboard', params: { user_id: authenticatedUser.id } });
+  router.push({ name: 'dashboard', params: { user_id: authenticatedUser.value.id } });
 }
 
 function validateInput() {
@@ -119,7 +120,13 @@ function validateInput() {
     </div>
 
     <Dialog v-model:visible="visible" header="Verification Needed">
-      <FlaggedSigninMessage />
+      <FlaggedSigninMessage v-if="user.email" @click="$router.push({
+        name: 'otp-verification',
+        query: {
+          email: user.email,
+          redirect: $route.query.redirect
+        },
+      })" />
     </Dialog>
   </section>
 </template>

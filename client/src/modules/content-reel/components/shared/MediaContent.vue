@@ -8,12 +8,6 @@ interface Props {
   media?: FullPost['media'];
 };
 const { media } = defineProps<Props>();
-const image = ref<HTMLImageElement | null>();
-
-onMounted(() => {
-  if (!image.value) return;
-  console.log(image.value)
-});
 </script>
 
 <template>

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+defineEmits(['click']);
+</script>
+
 <template>
   <div>
     <div class="flex items-center justify-center flex-col gap-3 md:flex-row">
@@ -18,7 +22,7 @@
     </div>
 
     <div class="mt-2 flex justify-center md:justify-end">
-      <Button label="OK" icon="pi pi-arrow-right" icon-pos="right" />
+      <Button @click="$emit('click')" label="OK" icon="pi pi-arrow-right" icon-pos="right" />
     </div>
   </div>
 </template>

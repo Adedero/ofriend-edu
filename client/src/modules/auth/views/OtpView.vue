@@ -3,7 +3,7 @@ import useFetch from '@/composables/use-fetch';
 import type { UseFetchError } from '@/composables/use-fetch/functions/fetch-error-creator';
 import fetchErrorHandler from '@/composables/use-fetch/functions/fetch-error-handler';
 import utils from '@/utils';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -16,6 +16,16 @@ interface User {
 const user = ref<null | User>(null);
 const OTP = ref('');
 
+const api = computed(() => {
+  if (route.query.user_id) {
+    return `auth/otp/mail?user_id=${route.query.user_id}`
+  }
+  else if (route.query.email) {
+    return `auth/otp/mail?email=${route.query.email}`
+  }
+  else return null;
+})
+
 const loading = ref(false);
 const err = ref<null | UseFetchError>(null);
 
@@ -25,10 +35,11 @@ const timer = ref<ReturnType<typeof setInterval>>();
 const verified = ref(false);
 
 //send email on mounted
-async function sendOtpEmail(userId: string) {
+async function sendOtpEmail() {
+  if (!api.value) return;
   err.value = null;
   loading.value = true;
-  const { data, error } = await useFetch<{ message: string; user: User }>(`auth/otp/mail?user_id=${userId}`, { method: 'POST', withCredentials: false });
+  const { data, error } = await useFetch<{ message: string; user: User }>(api.value, { method: 'POST', withCredentials: false });
   loading.value = false;
   if (error.value) {
     err.value = fetchErrorHandler(error.value, router);
@@ -44,7 +55,7 @@ async function sendOtpEmail(userId: string) {
   return true;
 }
 
-const resendOTP = () => sendOtpEmail(user.value?.id ?? route.query.user_id as string);
+const resendOTP = () => sendOtpEmail();
 
 //verify OTP
 const verificationError = ref<null | UseFetchError>(null);
@@ -84,11 +95,11 @@ const startTimer = () => {
 const stopTimer = () => clearInterval(timer.value);
 
 onMounted(async () => {
-  if (!route.query.user_id) {
+  if (!route.query.user_id && !route.query.email) {
     router.push('/');
     return;
   }
-  const success = await sendOtpEmail(route.query.user_id as string);
+  const success = await sendOtpEmail();
   if (!success) return;
   startTimer();
 });
@@ -117,7 +128,7 @@ onUnmounted(() => {
     </div>
 
     <div v-if="err">
-      <FetchError :error="err" @retry="sendOtpEmail($route.query?.user_id as string)" />
+      <FetchError :error="err" @retry="sendOtpEmail()" />
     </div>
 
     <div v-if="user">

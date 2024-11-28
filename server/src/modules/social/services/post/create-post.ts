@@ -41,7 +41,6 @@ export default async function createPost(req: Request, res: Response) {
     if (data) {
       media = data.map(file => {
         const file_data = fileData.find(f => f.name === file.originalName);
-        console.log(file_data)
         return {
           ...file,
           width: file_data?.width ?? 0,
